@@ -1,0 +1,36 @@
+﻿extends base.pug
+
+mixin page(title, url)
+    //- tags can be inlined with the #[] syntax
+    li #[a(href= url)= title]
+
+//- this block will overwrite what is in template.pug
+block main
+    div(style='margin: 50px;')
+        .row
+            +grid
+                //- attributes can be added inside ()
+                h2(style='margin-top: 0').
+                    Welcome to your new pug templates!
+                //- text can be inlined, no problem
+                p You might notice that, on the surface, this looks confusing.
+                //- or multi-line text can be written if you end a tag with '.'
+                p.
+                    But fear not, give yourself a day to play and you'll be up to speed 
+                    and quickly building things for the future. I've tried to capture a
+                    number of ways to write pug syntax so you can gain momentum quickly.
+                p
+                    h3 First, let's talk about 
+                        a(href='https://pugjs.org/api/getting-started.html', style='color: #369') Pug
+                    //- plain text can be 'piped' out
+                    | Everything you see here has been converted from a single solutions.html file and into a bunch of smaller pieces
+                    | that more closely resemble how a site might be applied in a cms.  And by creating everything in pug, we get
+                    | get to take advantage of a cms like dev experience, using includes and succinct markup to create our themes,
+                    | components, enabling us to quickly staging them for review/stress-testing and delivery.
+                p
+                    h3 Secondly, let's talk about 
+                        a(href='https://www.npmjs.com/package/browser-sync', style='color: #369') Browser Sync
+                    | Browser sync is going to speed things up for you, and since the goal of a template project is to keep our
+                    | front-end development in an instant-feedback environment, we can use gulp processes to compile all of our assets,
+                    | including html/pug, and then pass that off to browser sync to automatically detect changes and refresh your
+                    | browser without mouse-clicks.

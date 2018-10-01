@@ -1,0 +1,9 @@
+@import 'variables';
+
+@import 'header';
+@import 'footer';
+
+body {
+    box-shadow: 5px 5px 10px black;
+    transition: all 5s;
+}
