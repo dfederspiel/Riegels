@@ -6,6 +6,8 @@ include  grids/row.pug
 include  content/article.pug
 include  content/author.pug
 
+include mixins/style-guide
+
 doctype html
 html(lang="en")
     head
@@ -20,29 +22,18 @@ html(lang="en")
     body.standard
         header
             block header
-                +row
-                    +grid
-                        +row
+                +grid
+                    +row
+                        +col("col-md-12")
                             div.content(style='margin: 50px; text-align: center').
-                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                                sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                                magna aliquyam erat, sed diam voluptua.
+                                Riegel's Pipe &amp; Tobacco
         main
             block main
-                +row
-                    +grid
-                        +row
-                            div.content(style='margin: 50px; text-align: center').
-                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                                sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                                magna aliquyam erat, sed diam voluptua.
 
         footer
             block footer
-                +row
-                    +grid
-                        +row
+                +grid
+                    +row
+                        +col("col-md-12")
                             div.content(style='margin: 50px; text-align: center').
-                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                                sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                                magna aliquyam erat, sed diam voluptua.
+                                Contact Information
