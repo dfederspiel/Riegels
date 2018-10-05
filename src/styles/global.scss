@@ -3,7 +3,13 @@
 @import 'header';
 @import 'footer';
 
+:root {
+    font-size: 62.5%;
+}
+
 body {
-    box-shadow: 5px 5px 10px black;
     transition: all 5s;
 }
+
+h1 { color: $saddle-brown; }
+h2, h3, h4, h5 { color: $saddle-brown-light; }
