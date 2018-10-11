@@ -5,14 +5,7 @@ module.exports = function(){
     var faker = require('faker');
     var _ = require('lodash');
 
-    return { 
-        pets: _.times(100, function(n){
-            return {
-                id: n,
-                name: faker.name.firstName(),
-                age: faker.random.number({ min: 1, max: 20})
-            }
-        }),
+    return {
         articles: _.times(100, function(n){
             return {
                 id: n,
@@ -30,6 +23,9 @@ module.exports = function(){
                 bio: faker.lorem.words(Math.ceil(Math.random() * 50)),
                 website: faker.internet.url()
             };
+        }),
+        ipsum: _.times(1000, function(n){
+            return faker.lorem.words(1);
         }),
     };
 };
