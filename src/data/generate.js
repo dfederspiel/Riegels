@@ -24,5 +24,8 @@ module.exports = function(){
                 website: faker.internet.url()
             };
         }),
+        ipsum: _.times(1000, function(n){
+            return faker.lorem.words(1);
+        }),
     };
 };
