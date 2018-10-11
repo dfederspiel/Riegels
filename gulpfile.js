@@ -136,7 +136,7 @@ gulp.task('serve', ['html', 'sass', 'js'], function () {
     watch(['./src/js/**/*.js'], function(){ gulp.start('js'); reload(); });
 });
 
-gulp.task('watch', ['sass', 'js', 'image', 'font'], function () {
+gulp.task('watch', ['sass', 'js', 'img', 'font'], function () {
     watch(['./src/styles/**/*.scss'], function(){ gulp.start('sass') });
     watch(['./src/js/**/*.js'], function(){ gulp.start('js') });
     watch(['./src/img/**/*.*'], function(){ gulp.start('img') });
