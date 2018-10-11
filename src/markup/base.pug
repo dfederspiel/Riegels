@@ -5,6 +5,8 @@ include  grids/row
 
 include  content/article
 include  content/author
+include  content/unsplash-cred
+
 
 include mixins/ipsum
 include mixins/style-guide
@@ -29,6 +31,7 @@ html(lang="en")
                             div.content(style='margin: 50px; text-align: center').
                                 Riegel's Pipe &amp; Tobacco
         main
+            +unsplash-cred('/img/bg-brick.jpg', 'lindsaymergy')
             block main
 
         footer

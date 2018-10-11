@@ -47,9 +47,9 @@ gulp.task('html', function () {
         .pipe(gulp.dest(templateDistributionLocation + '/'));
 });
 
-gulp.task('image', function () {
-    gulp.src('./src/images/**/*.*')
-        .pipe(gulp.dest(templateDistributionLocation + '/images'))
+gulp.task('img', function () {
+    gulp.src('./src/img/**/*.*')
+        .pipe(gulp.dest(templateDistributionLocation + '/img'))
 });
 
 gulp.task('font', function () {
@@ -136,11 +136,11 @@ gulp.task('serve', ['html', 'sass', 'js'], function () {
     watch(['./src/js/**/*.js'], function(){ gulp.start('js'); reload(); });
 });
 
-gulp.task('watch', ['sass', 'js', 'image', 'font'], function () {
+gulp.task('watch', ['sass', 'js', 'img', 'font'], function () {
     watch(['./src/styles/**/*.scss'], function(){ gulp.start('sass') });
     watch(['./src/js/**/*.js'], function(){ gulp.start('js') });
-    watch(['./src/images/**/*.*'], function(){ gulp.start('images') });
+    watch(['./src/img/**/*.*'], function(){ gulp.start('img') });
     watch(['./src/fonts/**/*.*'], function(){ gulp.start('fonts') });
 });
 
-gulp.task('default', ['html', 'sass', 'js', 'image', 'font']);
+gulp.task('default', ['html', 'sass', 'js', 'img', 'font']);
