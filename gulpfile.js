@@ -16,13 +16,14 @@ var gulp = require('gulp'),
     data = require('gulp-data'),
     fs = require("fs"),
     watch = require('gulp-watch'),
+    colors = require('colors'),
     reload = browserSync.reload;
 
 require('es6-promise').polyfill();
 
 const templateDistributionLocation = "./dist";
 
-gulp.task('json', function(){
+const json = (callback) => {
     var json = require('./src/data/generate.js');
     fs.writeFile("./src/data/db.json", JSON.stringify(json()), 'utf8', function (err) {
         if (err) {
@@ -30,9 +31,10 @@ gulp.task('json', function(){
         }
         console.log("The file was saved!");
     });
-})
+    callback();
+}
 
-gulp.task('html', function () {
+const html = (callback) => {
     gulp.src('./src/markup/**/*.pug')
         .pipe(data( function(file) {
             return JSON.parse(fs.readFileSync('./src/data/db.json'))
@@ -45,48 +47,51 @@ gulp.task('html', function () {
         .on('error', gutil.log)
         .pipe(replace(entities.decode("&#65279;"), ''))
         .pipe(gulp.dest(templateDistributionLocation + '/'));
-});
+    callback();
+};
 
-gulp.task('img', function () {
+const img = (callback) => {
     gulp.src('./src/img/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/img'))
-});
+    callback();
+}
 
-gulp.task('font', function () {
+const font = (callback) => {
     gulp.src('./src/fonts/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
-});
+    callback();
+}
 
-gulp.task('js', function (callback) {
+const js = (callback) => {
     pump([
         gulp.src('./src/js/*.js'),
-        sourcemaps.init(),
+        //sourcemaps.init(),
         babel({
             presets: ['env']
         }),
         uglify(),
         rename({ suffix: '.min' }),
         concat('all.min.js'),
-        sourcemaps.write('.'),
+        //sourcemaps.write('.'),
         gulp.dest(templateDistributionLocation + '/js'),
 
         gulp.src('./src/js/vendor/*.js'),
-        sourcemaps.init(),
+        //sourcemaps.init(),
         babel({
             presets: ['env']
         }),
         uglify(),
         rename({ suffix: '.min' }),
         concat('vendor.min.js'),
-        sourcemaps.write('.'),
+        //sourcemaps.write('.'),
         gulp.dest(templateDistributionLocation + '/js'),
 
     ],
         callback
     );
-});
+};
 
-gulp.task('autoprefixer', function () {
+const autoprefixer = (callback) => {
     var postcss = require('gulp-postcss');
     var sourcemaps = require('gulp-sourcemaps');
     var autoprefixer = require('autoprefixer');
@@ -96,9 +101,10 @@ gulp.task('autoprefixer', function () {
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./dest'));
-});
+    callback();
+}
 
-gulp.task('sass', function () {
+const scss = (callback) => {
 
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
@@ -118,29 +124,49 @@ gulp.task('sass', function () {
             .on('error', gutil.log)
             .pipe(gulp.dest(templateDistributionLocation + '/css'));
     }
-})
+    callback();
+}
 
-gulp.task('serve', ['html', 'sass', 'js'], function () {
+gulp.task('serve', gulp.series(gulp.parallel(html, scss, js), function (callback) {
     browserSync({
         notify: true,
         logPrefix: 'DAF',
         reloadDelay: 1000,
+        port: 8000,
+        ui: {
+            port: 8080
+        },
         server: {
             baseDir: "./dist/",
-            index: "index.html"
+            index: "index.html",
         }
     });
 
-    watch(['./src/markup/**/*.html', './src/markup/**/*.pug'], function(){ gulp.start('html'); reload(); });
-    watch(['./src/styles/**/*.scss'], function(){ gulp.start('sass'); reload(); });
-    watch(['./src/js/**/*.js'], function(){ gulp.start('js'); reload(); });
-});
+    var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
+    htmlWatcher.on('all', function(event, path, stats) {
+        console.log('File ' + path + ' ' + event + ', running html task');
+        html(() => reload());
+    });
 
-gulp.task('watch', ['sass', 'js', 'img', 'font'], function () {
-    watch(['./src/styles/**/*.scss'], function(){ gulp.start('sass') });
-    watch(['./src/js/**/*.js'], function(){ gulp.start('js') });
-    watch(['./src/img/**/*.*'], function(){ gulp.start('img') });
-    watch(['./src/fonts/**/*.*'], function(){ gulp.start('fonts') });
-});
+    var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
+    sassWatcher.on('all', function(event, path, stats) {
+        console.log('File ' + path + ' ' + event + ', running sass task');
+        scss(() => reload());
+    });
 
-gulp.task('default', ['html', 'sass', 'js', 'img', 'font']);
+    var jsWatcher = gulp.watch(['./src/js/**/*.js']);
+    jsWatcher.on('all', function(event, path, stats) {
+        console.log(colors.green('File ' + path + ' ' + event + ', running javascript task'));
+        js(() => reload());
+    });
+    callback();
+}));
+
+gulp.task('watch', gulp.series(gulp.parallel(scss, js, img, font), function () {
+    watch(['./src/styles/**/*.scss'], function(){ gulp.series('sass') });
+    watch(['./src/js/**/*.js'], function(){ gulp.series('js') });
+    watch(['./src/img/**/*.*'], function(){ gulp.series('img') });
+    watch(['./src/fonts/**/*.*'], function(){ gulp.series('fonts') });
+}));
+
+gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, img, font)));
