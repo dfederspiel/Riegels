@@ -1,0 +1,16 @@
+@import 'variables';
+
+@import 'header';
+@import 'footer';
+@import 'unsplash-cred';
+
+:root {
+    font-size: 62.5%;
+}
+
+body {
+    transition: all 5s;
+}
+
+h1 { color: $saddle-brown; }
+h2, h3, h4, h5 { color: $saddle-brown-light; }

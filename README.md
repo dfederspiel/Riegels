@@ -1,2 +1,0 @@
-# Riegels
-Riegels Cigars
