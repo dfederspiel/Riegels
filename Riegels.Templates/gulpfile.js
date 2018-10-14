@@ -72,32 +72,35 @@ const font = (callback) => {
 
 const js = (callback) => {
     pump([
-        gulp.src('./src/js/*.js'),
-        //sourcemaps.init(),
-        //babel({
-        //    presets: ['env']
-        //}),
-        uglify(),
+        gulp.src('./src/js/client/**/*.js'),
+        sourcemaps.init(),
+        babel({
+            presets: ['env']
+        }),
+        //uglify(),
         rename({ suffix: '.min' }),
         concat('all.min.js'),
-        //sourcemaps.write('.'),
+        sourcemaps.write('.'),
         gulp.dest(templateDistributionLocation + '/js'),
         gulp.dest(webDistributionLocation + '/js'),
+    ],
+        callback
+    );
+};
 
-
-        gulp.src('./src/js/vendor/*.js'),
-        //sourcemaps.init(),
-        //babel({
-        //    presets: ['env']
-        //}),
-        uglify(),
+const jsv = (callback) => {
+    pump([
+        gulp.src('./src/js/vendor/**/*.js'),
+        sourcemaps.init(),
+        babel({
+            presets: ['env']
+        }),
+        //uglify(),
         rename({ suffix: '.min' }),
-        concat('vendor.min.js'),
-        //sourcemaps.write('.'),
+        concat('all.min.js'),
+        sourcemaps.write('.'),
         gulp.dest(templateDistributionLocation + '/js'),
         gulp.dest(webDistributionLocation + '/js'),
-
-
     ],
         callback
     );
@@ -141,7 +144,7 @@ const scss = (callback) => {
     callback();
 }
 
-gulp.task('serve', gulp.series(gulp.parallel(html, scss, js), function (callback) {
+gulp.task('serve', gulp.series(gulp.parallel(html, scss, js, jsv), (callback) => {
     browserSync({
         notify: true,
         logPrefix: 'DAF',
@@ -152,35 +155,48 @@ gulp.task('serve', gulp.series(gulp.parallel(html, scss, js), function (callback
         },
         server: {
             baseDir: "./dist/",
-            index: "index.html",
+            index: "index.html"
         }
-    });
+    }, callback);
 
     var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
     htmlWatcher.on('all', function (event, path, stats) {
-        console.log('File ' + path + ' ' + event + ', running html task');
-        html(() => reload());
+        console.log(colors.green('File ' + path + ' ' + event + ', running HTML task'));
+        html(() => reload(callback));
     });
 
     var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
     sassWatcher.on('all', function (event, path, stats) {
-        console.log('File ' + path + ' ' + event + ', running sass task');
-        scss(() => reload());
+        console.log(colors.green('File ' + path + ' ' + event + ', running SCSS task'));
+        scss(() => reload(callback));
+    });
+
+    var jsWatcher = gulp.watch(['./src/js/**/*.js']);
+    jsWatcher.on('all', function (event, path, stats) {
+        console.log(colors.green('File ' + path + ' ' + event + ', running JAVASCRIPT task'));
+        js(() => jsv(() => reload(callback)));
+    });
+}));
+
+gulp.task('watch', gulp.series(gulp.parallel(scss, js, jsv, img, font), function (callback) {
+    var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
+    htmlWatcher.on('all', function (event, path, stats) {
+        console.log(colors.green('File ' + path + ' ' + event + ', running html task'));
+        html(callback);
+    });
+
+    var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
+    sassWatcher.on('all', function (event, path, stats) {
+        console.log(colors.green('File ' + path + ' ' + event + ', running sass task'));
+        scss(callback);
     });
 
     var jsWatcher = gulp.watch(['./src/js/**/*.js']);
     jsWatcher.on('all', function (event, path, stats) {
         console.log(colors.green('File ' + path + ' ' + event + ', running javascript task'));
-        js(() => reload());
+        js(callback);
+        jsv(callback);
     });
-    callback();
 }));
 
-gulp.task('watch', gulp.series(gulp.parallel(scss, js, img, font), function () {
-    watch(['./src/styles/**/*.scss'], function () { gulp.series('sass') });
-    watch(['./src/js/**/*.js'], function () { gulp.series('js') });
-    watch(['./src/img/**/*.*'], function () { gulp.series('img') });
-    watch(['./src/fonts/**/*.*'], function () { gulp.series('fonts') });
-}));
-
-gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, img, font)));
+gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, jsv, img, font)));
