@@ -1,0 +1,15 @@
+{
+  "env": {
+    "development": {
+		"presets": ["env"],
+      "plugins": ["@babel/proposal-class-properties"]    },
+    "test": {
+      "presets": [["env"]],
+      "plugins": ["transform-object-rest-spread","transform-decorators-legacy","transform-class-properties"]
+    },
+    "production": {
+      "presets": [["env"]],
+      "plugins": ["transform-object-rest-spread","transform-decorators-legacy","transform-class-properties"]
+    }
+  }
+}

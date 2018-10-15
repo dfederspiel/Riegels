@@ -6,18 +6,13 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
-    uglify = require('gulp-uglify'),
-    babel = require('gulp-babel'),
     entities = require('html-entities').XmlEntities,
     replace = require('gulp-replace'),
-    pump = require('pump'),
     rename = require('gulp-rename'),
     browserSync = require('browser-sync'),
     data = require('gulp-data'),
     fs = require("fs"),
-    watch = require('gulp-watch'),
     colors = require('colors'),
-    jsonServer = require('json-server'),
     reload = browserSync.reload;
 
 require('es6-promise').polyfill();
@@ -71,39 +66,28 @@ const font = (callback) => {
 }
 
 const js = (callback) => {
-    pump([
-        gulp.src('./src/js/client/**/*.js'),
-        sourcemaps.init(),
-        babel({
-            presets: ['env']
-        }),
+
+    gulp.src('./src/js/client/**/*.js')
+        .pipe(sourcemaps.init())
         //uglify(),
-        rename({ suffix: '.min' }),
-        concat('all.min.js'),
-        sourcemaps.write('.'),
-        gulp.dest(templateDistributionLocation + '/js'),
-        gulp.dest(webDistributionLocation + '/js'),
-    ],
-        callback
-    );
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(concat('client.min.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(templateDistributionLocation + '/js'))
+        .pipe(gulp.dest(webDistributionLocation + '/js'));
+    callback();
 };
 
 const jsv = (callback) => {
-    pump([
-        gulp.src('./src/js/vendor/**/*.js'),
-        sourcemaps.init(),
-        babel({
-            presets: ['env']
-        }),
+    gulp.src('./src/js/vendor/**/*.js')
+        .pipe(sourcemaps.init())
         //uglify(),
-        rename({ suffix: '.min' }),
-        concat('all.min.js'),
-        sourcemaps.write('.'),
-        gulp.dest(templateDistributionLocation + '/js'),
-        gulp.dest(webDistributionLocation + '/js'),
-    ],
-        callback
-    );
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(concat('vendor.min.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(templateDistributionLocation + '/js'))
+        .pipe(gulp.dest(webDistributionLocation + '/js'));
+    callback();
 };
 
 const autoprefixer = (callback) => {
@@ -142,9 +126,9 @@ const scss = (callback) => {
 
     }
     callback();
-}
+};
 
-gulp.task('serve', gulp.series(gulp.parallel(html, scss, js, jsv), (callback) => {
+const serve = (callback) => {
     browserSync({
         notify: true,
         logPrefix: 'DAF',
@@ -158,45 +142,36 @@ gulp.task('serve', gulp.series(gulp.parallel(html, scss, js, jsv), (callback) =>
             index: "index.html"
         }
     }, callback);
+};
 
-    var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
-    htmlWatcher.on('all', function (event, path, stats) {
-        console.log(colors.green('File ' + path + ' ' + event + ', running HTML task'));
-        html(() => reload(callback));
-    });
-
-    var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
-    sassWatcher.on('all', function (event, path, stats) {
-        console.log(colors.green('File ' + path + ' ' + event + ', running SCSS task'));
-        scss(() => reload(callback));
-    });
-
-    var jsWatcher = gulp.watch(['./src/js/**/*.js']);
-    jsWatcher.on('all', function (event, path, stats) {
-        console.log(colors.green('File ' + path + ' ' + event + ', running JAVASCRIPT task'));
-        js(() => jsv(() => reload(callback)));
-    });
-}));
-
-gulp.task('watch', gulp.series(gulp.parallel(scss, js, jsv, img, font), function (callback) {
+const watch = (callback) => {
     var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
     htmlWatcher.on('all', function (event, path, stats) {
         console.log(colors.green('File ' + path + ' ' + event + ', running html task'));
-        html(callback);
+        html(reload);
     });
 
     var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
     sassWatcher.on('all', function (event, path, stats) {
         console.log(colors.green('File ' + path + ' ' + event + ', running sass task'));
-        scss(callback);
+        scss(reload);
     });
 
-    var jsWatcher = gulp.watch(['./src/js/**/*.js']);
+    var jsWatcher = gulp.watch(['./src/js/client/**/*.js']);
     jsWatcher.on('all', function (event, path, stats) {
         console.log(colors.green('File ' + path + ' ' + event + ', running javascript task'));
-        js(callback);
-        jsv(callback);
+        js(reload);
     });
-}));
+
+    var jsvWatcher = gulp.watch(['./src/js/vendor/**/*.js']);
+    jsvWatcher.on('all', function (event, path, stats) {
+        console.log(colors.green('File ' + path + ' ' + event + ', running javascript task'));
+        jsv(reload);
+    });
+    callback();
+}
+
+gulp.task('serve', gulp.series(json, html, scss, js, jsv, img, font, serve, watch));
+gulp.task('watch', gulp.series(watch));
 
 gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, jsv, img, font)));

@@ -38,18 +38,19 @@
     </footer>
     <script id="entry-template" type="text/x-handlebars-template">
       {{#each items}}
-          <div class="entry">
-              <h2>{{summary}}</h2>
-              <div class="body">
-                  Created: {{created}}<br />
-                  Begins: {{start.dateTime}}<br />
-                  Ends: {{end.dateTime}}<br />
-                  Description: {{description}}<br />
-                  Location: {{location}}<br />
-              </div>
-          </div>
+      	<div class="entry">
+      		<h2>{{summary}}</h2>
+      		<div class="body">
+      			Created: {{created}}<br />
+      			Begins: {{start.dateTime}}<br />
+      			Ends: {{end.dateTime}}<br />
+      			Description: {{description}}<br />
+      			Location: {{location}}<br />
+      		</div>
+      	</div>
       {{/each}}
     </script>
-    <script src="/js/all.min.js"></script>
+    <script src="/js/vendor.min.js"></script>
+    <script src="/js/client.min.js"></script>
   </body>
 </html>
