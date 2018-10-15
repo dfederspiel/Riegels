@@ -13,9 +13,8 @@ var gulp = require('gulp'),
     data = require('gulp-data'),
     fs = require("fs"),
     colors = require('colors'),
-    reload = browserSync.reload;
-
-require('es6-promise').polyfill();
+    reload = browserSync.reload,
+    babel = require('gulp-babel');
 
 const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
@@ -70,6 +69,9 @@ const js = (callback) => {
     gulp.src('./src/js/client/**/*.js')
         .pipe(sourcemaps.init())
         //uglify(),
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(concat('client.min.js'))
         .pipe(sourcemaps.write('.'))
@@ -82,6 +84,9 @@ const jsv = (callback) => {
     gulp.src('./src/js/vendor/**/*.js')
         .pipe(sourcemaps.init())
         //uglify(),
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(concat('vendor.min.js'))
         .pipe(sourcemaps.write('.'))
