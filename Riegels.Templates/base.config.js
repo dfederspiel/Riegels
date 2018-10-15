@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 module.exports = {
     entry: [ 'babel-polyfill' ],
     devServer: {
@@ -15,7 +17,7 @@ module.exports = {
             },
             {
                 test: /\.pug$/,
-                use: ['file-loader?name=[path][name].html', 'pug-html-loader?pretty&exports=false']
+                use: ['html-loader', 'pug-html-loader?pretty&exports=false'],
             },
         ]
     }

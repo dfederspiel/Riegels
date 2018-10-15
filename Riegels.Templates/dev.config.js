@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const glob = require('glob');
 const merge = require('webpack-merge');
 const baseConfig = require('./base.config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -19,6 +20,9 @@ module.exports = merge(baseConfig, {
         chunkModules: false
     },
     entry: {
+        pug: glob.sync(path.join(src, '/markup/base.pug'), {
+            cwd: src
+        }),
         index: path.join(src, 'index.js')
     },
     output: {
@@ -58,7 +62,7 @@ module.exports = merge(baseConfig, {
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
-            fileName: '*.pug'
+            fileName: 'base.pug'
         }),
     ]
 });
