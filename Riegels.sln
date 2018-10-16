@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Riegels.Templates", "Riegels.Templates\", "{042783E5-09D8-4FA2-8535-2785C216AC6C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_58172"
+		Debug.AspNetCompiler.PhysicalPath = "Riegels.Templates\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_58172\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_58172"
+		Release.AspNetCompiler.PhysicalPath = "Riegels.Templates\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_58172\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "58172"
+		SlnRelativePath = "Riegels.Templates\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riegels", "Riegels\Riegels.csproj", "{19702539-132A-41ED-AA48-456E42B48D9F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{042783E5-09D8-4FA2-8535-2785C216AC6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{042783E5-09D8-4FA2-8535-2785C216AC6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{042783E5-09D8-4FA2-8535-2785C216AC6C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{042783E5-09D8-4FA2-8535-2785C216AC6C}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{19702539-132A-41ED-AA48-456E42B48D9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19702539-132A-41ED-AA48-456E42B48D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19702539-132A-41ED-AA48-456E42B48D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19702539-132A-41ED-AA48-456E42B48D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DF52C1DF-9F57-4A33-960D-930DC54D7231}
+	EndGlobalSection
+EndGlobal
