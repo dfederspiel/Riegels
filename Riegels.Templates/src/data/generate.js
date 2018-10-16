@@ -6,7 +6,7 @@ module.exports = function () {
     var _ = require('lodash');
 
     return {
-        articles: _.times(1, function (n) {
+        articles: _.times(20, function (n) {
             return {
                 id: n,
                 title: faker.random.words(Math.ceil(Math.random() * 10)),
@@ -15,7 +15,7 @@ module.exports = function () {
                 body: faker.lorem.words(Math.ceil(Math.random() * 100))
             };
         }),
-        authors: _.times(100, function (n) {
+        authors: _.times(20, function (n) {
             return {
                 id: n,
                 firstName: faker.name.firstName(),
@@ -66,43 +66,6 @@ module.exports = function () {
                         "email": "david@federnet.com"
                     },
                     "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
-                    "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T15:00:00-04:00"
-                    },
-                    "description": "Come celebrate!",
-                    "created": "2018-10-11T23:56:08.000Z",
-                    "iCalUID": "3gsv2m922rjt5u6v5m3p0fo738@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=M2dzdjJtOTIycmp0NXU2djVtM3AwZm83MzggZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:56:08.845Z",
-                    "summary": "Event Two",
-                    "start": {
-                        "dateTime": "2018-10-12T14:00:00-04:00"
-                    },
-                    "etag": "\"3078604337690000\"",
-                    "location": "720 Jackson St, Fort Wayne, IN 46802, USA",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "3gsv2m922rjt5u6v5m3p0fo738"
                 }
             ],
             "updated": "2018-10-14T04:22:01.955Z",

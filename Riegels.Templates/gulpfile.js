@@ -39,45 +39,55 @@ const json = (callback) => {
     console.log(colors.green('Running JSON data generator task'));
 
     delete require.cache[require.resolve('./src/data/generate.js')];
-    var jsonData = require('./src/data/generate.js');
 
-    fs.writeFileSync("./src/data/db.json", JSON.stringify(jsonData()), 'utf8');
-    if (callback)
-        callback();
+    try {
+        var jsonData = require('./src/data/generate.js');
+        fs.writeFile("./src/data/db.json", JSON.stringify(jsonData()), 'utf8', (err) => {
+            if (err)
+                console.log(err);
+
+            if (callback)
+                callback();
+        });
+    } catch {
+        console.log('there was a problem');
+        if (callback)
+            callback();
+    }
 };
 
 const jsonsrv = () => {
-    console.log(colors.green('Starting JSON Server'));
     return gulp.src("./src/data/db.json")
         .pipe(server.pipe());
 };
 
 const html = () => {
-    console.log(colors.green('Running HTML task'));
-    return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
-        .pipe(data(function (file) {
-            return JSON.parse(fs.readFileSync('./src/data/db.json'));
-        }))
-        .pipe(pug({
-            pretty: true,
-            debug: false,
-            compileDebug: false
-        }))
-        .on('error', gutil.log)
-        .pipe(replace(entities.decode("&#65279;"), ''))
-        .pipe(gulp.dest(templateDistributionLocation + '/'))
-        .pipe(gulp.dest(webDistributionLocation + '/'));
+    try {
+        return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
+            .pipe(data(function (file) {
+                return JSON.parse(fs.readFileSync('./src/data/db.json'));
+            }))
+            .pipe(pug({
+                pretty: true,
+                debug: false,
+                compileDebug: false
+            }))
+            .on('error', gutil.log)
+            .pipe(replace(entities.decode("&#65279;"), ''))
+            .pipe(gulp.dest(templateDistributionLocation + '/'))
+            .pipe(gulp.dest(webDistributionLocation + '/'));
+    } catch(err) {
+        console.log(err);
+    }
 };
 
 const img = () => {
-    console.log(colors.green('Running IMG task'));
     return gulp.src('./src/img/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/img'))
         .pipe(gulp.dest(webDistributionLocation + '/img'));
 };
 
 const font = () => {
-    console.log(colors.green('Running FONT task'));
     return gulp.src('./src/fonts/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
@@ -170,19 +180,22 @@ const watch = (callback) => {
     var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
     htmlWatcher.on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        html(reload);
+        html();
+        reload();
     });
 
     var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
     sassWatcher.on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        scss(reload);
+        scss();
+        reload();
     });
 
     var jsWatcher = gulp.watch(['./src/js/**/*.js']);
     jsWatcher.on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        js(reload);
+        js();
+        reload();
     });
 
     var jsonWatcher = gulp.watch(['./src/data/generate.js']);
@@ -197,7 +210,8 @@ const watch = (callback) => {
     var jsonDbWatcher = gulp.watch(['./src/data/*.json']);
     jsonDbWatcher.on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        jsonsrv(reload);
+        jsonsrv();
+        reload();
     });
 
     //gulp.watch(["./src/data/db.json"], jsonsrv);
