@@ -2,16 +2,27 @@
 import $ from "jquery";
 import Handlebars from 'handlebars';
 
-var source = document.getElementById("entry-template").innerHTML;
-var template = Handlebars.compile(source);
-
 const eventsApi = 'http://localhost:8001/api/events';
 
-$.get(eventsApi, function (response) {
-    $.each(response.items, function (idx, item) {
-        console.log(moment(item.created).format('ll'));
-    });
-    var context = response;
-    var html = template(context);
-    $('.events').html(html);
-});
+class Calendar {
+    constructor() {
+        this.source = document.getElementById("entry-template").innerHTML;
+        this.template = Handlebars.compile(this.source);
+
+        this.getEvents = this.getEvents.bind(this);
+    }
+
+    getEvents() {
+        let t = this.template;
+        $.get(eventsApi, function (response) {
+            $.each(response.items, function (idx, item) {
+                console.log(moment(item.created).format('ll'));
+            });
+            var context = response;
+            var html = t(context);
+            $('.events').html(html);
+        });
+    }
+}
+
+export default Calendar;

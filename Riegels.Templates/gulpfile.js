@@ -1,4 +1,4 @@
-/// <binding BeforeBuild='default' ProjectOpened='watch' />
+/// <binding BeforeBuild='default' ProjectOpened='default' />
 const gulp = require('gulp'),
     pug = require('gulp-pug'),
     gutil = require('gulp-util'),
@@ -24,6 +24,7 @@ const gulp = require('gulp'),
     jsonServer = require("gulp-json-srv");
 
 const vendors = ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'];
+
 const server = jsonServer.create({
     port: 8001,
     verbosity: {
@@ -61,30 +62,40 @@ const jsonsrv = () => {
         .pipe(server.pipe());
 };
 
-const html = () => {
-    try {
-        return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
-            .pipe(data(function (file) {
-                return JSON.parse(fs.readFileSync('./src/data/db.json'));
-            }))
-            .pipe(pug({
-                pretty: true,
-                debug: false,
-                compileDebug: false
-            }))
-            .on('error', gutil.log)
-            .pipe(replace(entities.decode("&#65279;"), ''))
-            .pipe(gulp.dest(templateDistributionLocation + '/'))
-            .pipe(gulp.dest(webDistributionLocation + '/'));
-    } catch(err) {
-        console.log(err);
-    }
+const html = (callback) => {
+
+    return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
+        .pipe(data(function (file) {
+            return JSON.parse(fs.readFileSync('./src/data/db.json'));
+        }))
+        .pipe(pug({
+            pretty: true,
+            debug: false,
+            compileDebug: false
+        }).on('error', function (err) {
+            console.log(colors.red(err.message));
+            console.log(colors.grey(err.stack));
+            callback();
+        }))
+        .pipe(replace(entities.decode("&#65279;"), ''))
+        .pipe(gulp.dest(templateDistributionLocation + '/'))
+        .pipe(gulp.dest(webDistributionLocation + '/'))
+        .on('end', function () {
+            callback();
+        });
 };
 
-const img = () => {
+const img = (callback) => {
+
     return gulp.src('./src/img/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/img'))
-        .pipe(gulp.dest(webDistributionLocation + '/img'));
+        .pipe(gulp.dest(webDistributionLocation + '/img'))
+        .on('error', function (err) {
+            console.log(colors.red(err.toString()));
+            callback();
+        }).on('end', function () {
+            callback();
+        });
 };
 
 const font = () => {
@@ -93,28 +104,40 @@ const font = () => {
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
 };
 
-const js = () => {
+const js = (callback) => {
     console.log(colors.green('Running JavaScript Client task'));
     var b = browserify({
         entries: './src/js/app.js',
-        debug: true
-    })
+        debug: true })
         .external(vendors)
         .transform('babelify', {
             presets: ['@babel/preset-env']
         });
 
-    return b.bundle()
+    return b
+        .bundle((err) => {
+            if (err)
+                console.log(colors.red(err.toString()));
+
+            if (callback)
+                callback();
+        })
         .pipe(source('app.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(uglify())
-        .on('error', log.error)
+        .on('error', function (err) {
+            console.log(colors.red(err.toString()));
+            callback();
+        })
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/js/'));
+        .pipe(gulp.dest('./dist/js/'))
+        .on('end', function () {
+            callback();
+        });
 };
 
-const jsv = () => {
+const jsv = (callback) => {
     console.log(colors.green('Running JavaScript Vendor task'));
     var b = browserify({
         debug: true
@@ -126,17 +149,27 @@ const jsv = () => {
         b.require(lib);
     });
 
-    return b.bundle()
+    return b
+        .bundle((err) => {
+            if (err)
+                console.log(colors.red(err.toString()));
+
+            if (callback)
+                callback();
+        })
         .pipe(source('vendors.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(uglify())
-        .on('error', log.error)
+        .on('error', function (err) {
+            console.log(colors.red(err.toString()));
+            callback();
+        })
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/js/'));
 };
 
-const scss = () => {
+const scss = (callback) => {
     console.log(colors.green('Running SCSS task'));
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
@@ -153,9 +186,15 @@ const scss = () => {
             .pipe(minify())
             .pipe(postcss([autoprefixer()]))
             .pipe(sourcemaps.write('.'))
-            .on('error', gutil.log)
+            .on('error', function (err) {
+                console.log(colors.red(err.toString()));
+                callback();
+            })
             .pipe(gulp.dest(templateDistributionLocation + '/css'))
-            .pipe(gulp.dest(webDistributionLocation + '/css'));
+            .pipe(gulp.dest(webDistributionLocation + '/css'))
+            .on('end', function () {
+                callback();
+            });
 
     }
 };
@@ -177,49 +216,46 @@ const serve = (callback) => {
 };
 
 const watch = (callback) => {
-    var htmlWatcher = gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']);
-    htmlWatcher.on('all', function (event, path, stats) {
+
+    gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        html();
-        reload();
+        html(reload);
     });
 
-    var sassWatcher = gulp.watch(['./src/styles/**/*.scss']);
-    sassWatcher.on('all', function (event, path, stats) {
+    gulp.watch(['./src/styles/**/*.scss']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        scss();
-        reload();
+        scss(reload);
     });
 
-    var jsWatcher = gulp.watch(['./src/js/**/*.js']);
-    jsWatcher.on('all', function (event, path, stats) {
+    gulp.watch(['./src/js/**/*.js']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        js();
-        reload();
+        js(reload);
     });
 
-    var jsonWatcher = gulp.watch(['./src/data/generate.js']);
-    jsonWatcher.on('change', function (event, path, stats) {
+    gulp.watch(['./src/data/generate.js']).on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         server.kill(() => {
             json();
         });
-        
+
     });
 
-    var jsonDbWatcher = gulp.watch(['./src/data/*.json']);
-    jsonDbWatcher.on('change', function (event, path, stats) {
+    gulp.watch(['./src/data/*.json']).on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         jsonsrv();
         reload();
     });
 
-    //gulp.watch(["./src/data/db.json"], jsonsrv);
+    // TODO: Provide sync logic to remove files on different events
+    gulp.watch(['./src/img/**/*']).on('add', function (event, path, stats) {
+        console.log(colors.yellow('File ' + path + ' ' + event));
+        img(reload);
+    });
 
     callback();
 };
 
-gulp.task('serve', gulp.parallel(serve, watch));
+gulp.task('serve', gulp.series(serve, watch));
 gulp.task('watch', gulp.series(watch));
 gulp.task('vendor', gulp.series(jsv));
 gulp.task('default', gulp.series(json, jsonsrv, gulp.parallel(html, scss, js, jsv, img, font), serve, watch));
