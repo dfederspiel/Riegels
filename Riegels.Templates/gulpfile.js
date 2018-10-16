@@ -1,5 +1,5 @@
 /// <binding BeforeBuild='default' ProjectOpened='watch' />
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     pug = require('gulp-pug'),
     gutil = require('gulp-util'),
     minify = require('gulp-minify-css'),
@@ -28,6 +28,7 @@ const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
 
 const json = (callback) => {
+    console.log(colors.green('Running JSON data generator task'));
     var json = require('./src/data/generate.js');
     fs.writeFile("./src/data/db.json", JSON.stringify(json()), 'utf8', function (err) {
         if (err) {
@@ -42,7 +43,7 @@ const html = (callback) => {
     console.log(colors.green('Running HTML task'));
     gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
         .pipe(data(function (file) {
-            return JSON.parse(fs.readFileSync('./src/data/db.json'))
+            return JSON.parse(fs.readFileSync('./src/data/db.json'));
         }))
         .pipe(pug({
             pretty: true,
@@ -73,7 +74,7 @@ const font = (callback) => {
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
 
     callback();
-}
+};
 
 const js = (callback) => {
     console.log(colors.green('Running JavaScript Client task'));
@@ -90,7 +91,6 @@ const js = (callback) => {
         .pipe(source('app.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
-        // Add transformation tasks to the pipeline here.
         .pipe(uglify())
         .on('error', log.error)
         .pipe(sourcemaps.write('./'))
@@ -99,7 +99,7 @@ const js = (callback) => {
 };
 
 const jsv = (callback) => {
-    // set up the browserify instance on a task basis
+    console.log(colors.green('Running JavaScript Vendor task'));
     var b = browserify({
         debug: true
     }).transform('babelify', {
@@ -114,23 +114,10 @@ const jsv = (callback) => {
         .pipe(source('vendors.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
-        // Add transformation tasks to the pipeline here.
         .pipe(uglify())
         .on('error', log.error)
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/js/'));
-};
-
-const autoprefixer = (callback) => {
-    var postcss = require('gulp-postcss');
-    var sourcemaps = require('gulp-sourcemaps');
-    var autoprefixer = require('autoprefixer');
-    callback();
-    return gulp.src('./src/*.css')
-        .pipe(sourcemaps.init())
-        .pipe(postcss([autoprefixer()]))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./dest'));
 };
 
 const scss = (callback) => {
@@ -192,10 +179,17 @@ const watch = (callback) => {
         console.log(colors.yellow('File ' + path + ' ' + event));
         js(reload);
     });
+
+    var jsonWatcher = gulp.watch(['./src/data/generate.js']);
+    jsonWatcher.on('all', function (event, path, stats) {
+        console.log(colors.yellow('File ' + path + ' ' + event));
+        json(reload);
+    });
+
     callback();
 };
 
-gulp.task('serve', gulp.series(json, html, scss, js, img, font, serve, watch));
+gulp.task('serve', gulp.parallel(serve, watch));
 gulp.task('watch', gulp.series(watch));
 gulp.task('vendor', gulp.series(jsv));
-gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, img, font)));
+gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), serve, watch));
