@@ -14,7 +14,15 @@ var gulp = require('gulp'),
     fs = require("fs"),
     colors = require('colors'),
     reload = browserSync.reload,
-    babel = require('gulp-babel');
+    babel = require('gulp-babel'),
+    browserify = require('browserify'),
+    babelify = require('babelify'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
+    uglify = require('gulp-uglify'),
+    log = require('gulplog');
+
+const vendors = ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'];
 
 const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
@@ -28,7 +36,7 @@ const json = (callback) => {
         console.log("The file was saved!");
     });
     callback();
-}
+};
 
 const html = (callback) => {
     console.log(colors.green('Running HTML task'));
@@ -56,7 +64,7 @@ const img = (callback) => {
         .pipe(gulp.dest(webDistributionLocation + '/img'));
 
     callback();
-}
+};
 
 const font = (callback) => {
     console.log(colors.green('Running FONT task'));
@@ -69,34 +77,48 @@ const font = (callback) => {
 
 const js = (callback) => {
     console.log(colors.green('Running JavaScript Client task'));
-    gulp.src('./src/js/client/**/*.js')
-        .pipe(sourcemaps.init())
-        //uglify(),
-        .pipe(babel({
-            presets: ['@babel/env']
-        }))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(concat('client.min.js'))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(templateDistributionLocation + '/js'))
-        .pipe(gulp.dest(webDistributionLocation + '/js'));
+    var b = browserify({
+        entries: './src/js/app.js',
+        debug: true
+    })
+        .external(vendors)
+        .transform('babelify', {
+            presets: ['@babel/preset-env']
+        });
+
+    b.bundle()
+        .pipe(source('app.min.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        // Add transformation tasks to the pipeline here.
+        .pipe(uglify())
+        .on('error', log.error)
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist/js/'));
     callback();
 };
 
 const jsv = (callback) => {
-    console.log(colors.green('Running JavaScript Vendor task'));
-    gulp.src('./src/js/vendor/**/*.js')
-        .pipe(sourcemaps.init())
-        //uglify(),
-        .pipe(babel({
-            presets: ['@babel/env']
-        }))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(concat('vendor.min.js'))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(templateDistributionLocation + '/js'))
-        .pipe(gulp.dest(webDistributionLocation + '/js'));
-    callback();
+    // set up the browserify instance on a task basis
+    var b = browserify({
+        debug: true
+    }).transform('babelify', {
+        presets: ['@babel/preset-env']
+    });
+
+    vendors.forEach(lib => {
+        b.require(lib);
+    });
+
+    return b.bundle()
+        .pipe(source('vendors.min.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        // Add transformation tasks to the pipeline here.
+        .pipe(uglify())
+        .on('error', log.error)
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist/js/'));
 };
 
 const autoprefixer = (callback) => {
@@ -109,8 +131,7 @@ const autoprefixer = (callback) => {
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./dest'));
-
-}
+};
 
 const scss = (callback) => {
     console.log(colors.green('Running SCSS task'));
@@ -166,21 +187,15 @@ const watch = (callback) => {
         scss(reload);
     });
 
-    var jsWatcher = gulp.watch(['./src/js/client/**/*.js']);
+    var jsWatcher = gulp.watch(['./src/js/**/*.js']);
     jsWatcher.on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         js(reload);
     });
-
-    var jsvWatcher = gulp.watch(['./src/js/vendor/**/*.js']);
-    jsvWatcher.on('all', function (event, path, stats) {
-        console.log(colors.yellow('File ' + path + ' ' + event));
-        jsv(reload);
-    });
     callback();
-}
+};
 
-gulp.task('serve', gulp.series(json, html, scss, js, jsv, img, font, serve, watch));
+gulp.task('serve', gulp.series(json, html, scss, js, img, font, serve, watch));
 gulp.task('watch', gulp.series(watch));
-
-gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, jsv, img, font, serve, watch)));
+gulp.task('vendor', gulp.series(jsv));
+gulp.task('default', gulp.series(gulp.parallel(json, html, scss, js, img, font)));
