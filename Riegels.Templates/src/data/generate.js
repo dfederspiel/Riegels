@@ -6,7 +6,7 @@ module.exports = function () {
     var _ = require('lodash');
 
     return {
-        articles: _.times(100, function (n) {
+        articles: _.times(1, function (n) {
             return {
                 id: n,
                 title: faker.random.words(Math.ceil(Math.random() * 10)),

@@ -5,7 +5,7 @@ import Handlebars from 'handlebars';
 var source = document.getElementById("entry-template").innerHTML;
 var template = Handlebars.compile(source);
 
-const eventsApi = 'http://localhost:3000/api/events';
+const eventsApi = 'http://localhost:8001/api/events';
 
 $.get(eventsApi, function (response) {
     $.each(response.items, function (idx, item) {

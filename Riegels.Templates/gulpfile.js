@@ -20,28 +20,41 @@ const gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
     uglify = require('gulp-uglify'),
-    log = require('gulplog');
+    log = require('gulplog'),
+    jsonServer = require("gulp-json-srv");
 
 const vendors = ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'];
-
+const server = jsonServer.create({
+    port: 8001,
+    verbosity: {
+        level: "info",
+        urlTracing: true
+    },
+    baseUrl: '/api'
+});
 const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
 
 const json = (callback) => {
     console.log(colors.green('Running JSON data generator task'));
-    var json = require('./src/data/generate.js');
-    fs.writeFile("./src/data/db.json", JSON.stringify(json()), 'utf8', function (err) {
-        if (err) {
-            return console.log(err);
-        }
-        console.log("The file was saved!");
-    });
-    callback();
+
+    delete require.cache[require.resolve('./src/data/generate.js')];
+    var jsonData = require('./src/data/generate.js');
+
+    fs.writeFileSync("./src/data/db.json", JSON.stringify(jsonData()), 'utf8');
+    if (callback)
+        callback();
 };
 
-const html = (callback) => {
+const jsonsrv = () => {
+    console.log(colors.green('Starting JSON Server'));
+    return gulp.src("./src/data/db.json")
+        .pipe(server.pipe());
+};
+
+const html = () => {
     console.log(colors.green('Running HTML task'));
-    gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
+    return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
         .pipe(data(function (file) {
             return JSON.parse(fs.readFileSync('./src/data/db.json'));
         }))
@@ -54,29 +67,23 @@ const html = (callback) => {
         .pipe(replace(entities.decode("&#65279;"), ''))
         .pipe(gulp.dest(templateDistributionLocation + '/'))
         .pipe(gulp.dest(webDistributionLocation + '/'));
-
-    callback();
 };
 
-const img = (callback) => {
+const img = () => {
     console.log(colors.green('Running IMG task'));
-    gulp.src('./src/img/**/*.*')
+    return gulp.src('./src/img/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/img'))
         .pipe(gulp.dest(webDistributionLocation + '/img'));
-
-    callback();
 };
 
-const font = (callback) => {
+const font = () => {
     console.log(colors.green('Running FONT task'));
-    gulp.src('./src/fonts/**/*.*')
+    return gulp.src('./src/fonts/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
-
-    callback();
 };
 
-const js = (callback) => {
+const js = () => {
     console.log(colors.green('Running JavaScript Client task'));
     var b = browserify({
         entries: './src/js/app.js',
@@ -87,7 +94,7 @@ const js = (callback) => {
             presets: ['@babel/preset-env']
         });
 
-    b.bundle()
+    return b.bundle()
         .pipe(source('app.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
@@ -95,10 +102,9 @@ const js = (callback) => {
         .on('error', log.error)
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/js/'));
-    callback();
 };
 
-const jsv = (callback) => {
+const jsv = () => {
     console.log(colors.green('Running JavaScript Vendor task'));
     var b = browserify({
         debug: true
@@ -120,17 +126,17 @@ const jsv = (callback) => {
         .pipe(gulp.dest('./dist/js/'));
 };
 
-const scss = (callback) => {
+const scss = () => {
     console.log(colors.green('Running SCSS task'));
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
 
-    bundle([
+    return bundle([
         './src/styles/global.scss'
     ], 'bundle.min.css');
 
     function bundle(source, dest) {
-        gulp.src(source)
+        return gulp.src(source)
             .pipe(sourcemaps.init())
             .pipe(sass().on('error', sass.logError))
             .pipe(concat(dest))
@@ -142,7 +148,6 @@ const scss = (callback) => {
             .pipe(gulp.dest(webDistributionLocation + '/css'));
 
     }
-    callback();
 };
 
 const serve = (callback) => {
@@ -181,10 +186,21 @@ const watch = (callback) => {
     });
 
     var jsonWatcher = gulp.watch(['./src/data/generate.js']);
-    jsonWatcher.on('all', function (event, path, stats) {
+    jsonWatcher.on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        json(reload);
+        server.kill(() => {
+            json();
+        });
+        
     });
+
+    var jsonDbWatcher = gulp.watch(['./src/data/*.json']);
+    jsonDbWatcher.on('change', function (event, path, stats) {
+        console.log(colors.yellow('File ' + path + ' ' + event));
+        jsonsrv(reload);
+    });
+
+    //gulp.watch(["./src/data/db.json"], jsonsrv);
 
     callback();
 };
@@ -192,4 +208,4 @@ const watch = (callback) => {
 gulp.task('serve', gulp.parallel(serve, watch));
 gulp.task('watch', gulp.series(watch));
 gulp.task('vendor', gulp.series(jsv));
-gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), serve, watch));
+gulp.task('default', gulp.series(json, jsonsrv, gulp.parallel(html, scss, js, jsv, img, font), serve, watch));
