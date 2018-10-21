@@ -12,30 +12,23 @@ Handlebars.registerHelper('formatDate', function (date) {
     return moment(date).format("dddd, MMMM Do YYYY, h:mm a");
 });
 
-const htmlDecode = (input) => {
-    var e = document.createElement('div');
-    e.innerHTML = input;
-    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-}
-
 const eventsApi = '/api/events';
 
 class Calendar {
     constructor() {
         this.source = document.getElementById("entry-template").innerHTML;
         this.template = Handlebars.compile(this.source);
-
         this.getEvents = this.getEvents.bind(this);
     }
 
     getEvents() {
-        let t = this.template;
+        let hTemplate = this.template;
         $.get(eventsApi, function (response) {
             $.each(response.items, function (idx, item) {
                 console.log(moment(item.created).format('ll'));
             });
             var context = response;
-            var html = t(context);
+            var html = hTemplate(context);
             $('.events').html(html);
         });
     }
