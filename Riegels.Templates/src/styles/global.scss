@@ -36,7 +36,7 @@ body {
     .button {
         padding: 25px 10px;
         font-weight: bold;
-        background-color: $peru;
+        background-color: rgba($peru, .85);
         border: solid 2px $saddle-brown;
         border-radius: 5px;
         box-shadow: 5px 5px 10px rgba($saddle-brown, .25);
