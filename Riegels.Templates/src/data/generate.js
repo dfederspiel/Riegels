@@ -96,7 +96,7 @@ module.exports = function () {
             "defaultReminders": [],
             "description": "Events for Riegels Pipe and Tobacco",
             "etag": "\"p330dptufjmcds0g\"",
-            items: _.times(10, () => {
+            items: _.times(5, () => {
                 return {
                     "anyoneCanAddSelf": null,
                     "attachments": [{

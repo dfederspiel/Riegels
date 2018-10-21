@@ -2,10 +2,10 @@ mixin events
     .events
         script#entry-template(type='text/x-handlebars-template').
             {{#each items}}
-                <div class="panel">
+                <div class="event">
                     <div class="entry">
-                        <h2>{{summary}}</h2>
                         <div class="body">
+                            <h1 class="title">{{summary}}</h1>
                             <h3>Who</h3>
                             <div class="organizer">{{organizer.displayName}}</div>
 

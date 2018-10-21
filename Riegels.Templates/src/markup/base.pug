@@ -1,16 +1,16 @@
-include  grids/grid
-include  grids/gridf
-include  grids/col
-include  grids/row
+include grids/grid
+include grids/gridf
+include grids/col
+include grids/row
 
-include  content/article
-include  content/author
-include  content/unsplash-cred
+include content/article
+include content/author
+include content/unsplash-cred
 include content/contact
+include content/events
 
 include mixins/ipsum
 include mixins/style-guide
-include mixins/events
 
 include mixins/sitefinity/sf-library-selector
 
@@ -30,16 +30,16 @@ html(lang="en")
 			.button BackTo Top
 		header
 			block header
-				+grid
-					+row
-						+col("col-md-12")
-							div.content(style='margin: 50px; text-align: center').
-								Riegel's Pipe &amp; Tobacco
-							.menu
-								a.js-anchor(href="#about") About
-								a.js-anchor(href="#history") History
-								a.js-anchor(href="#events") Events
-		+unsplash-cred('/img/bg-brick.jpg', 'lindsaymergy')
+				.image
+					.overlay
+						+grid
+							+row
+								+col("col-md-12")
+									.content(style='margin: 50px; text-align: center') Riegel's Pipe &amp; Tobacco
+										.menu
+											a.js-anchor(href="#about") About
+											a.js-anchor(href="#history") History
+											a.js-anchor(href="#events") Events
 		main
 			block main
 

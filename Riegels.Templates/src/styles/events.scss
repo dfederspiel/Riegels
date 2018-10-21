@@ -1,27 +1,36 @@
+//$flex-gutter: 20px;
+
 .events {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     justify-content: space-around;
     transition: all .5s;
-    .panel {
+    @include tablet {
+        flex-direction: row;
+    }
+    .event {
         flex: 1 1 100%;
-        @include tablet {
+
+        @include lg-tablet {
             flex: 1 1 50%;
         }
         @include desktop {
             flex: 1 1 33%;
         }
         .entry {
-            margin: 10px;
-            background-color: $rosy-brown-light;
-            padding: 40px;
+            margin: 10px 0;
             height: 100%;
-            border-radius: 5px;
-            box-shadow: 10px 10px 10px rgba($saddle-brown-light, .1);
-            h2 {
+            
+            .title {
                 margin: 0;
                 font-size: 30px;
                 word-break: break-word;
+            }
+            .body {
+                margin-top: 10px;
+                border-radius: 5px;
+                padding: 25px;
             }
         }
     }

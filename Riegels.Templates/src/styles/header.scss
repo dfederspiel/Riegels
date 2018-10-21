@@ -1,15 +1,39 @@
 header {
-    background-color: $saddle-brown;
-    color: $rosy-brown-light;
-    font-size: 6rem;
-    .menu {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        a {
-            font-size: 25px;
-            padding: 25px;
+    
+    .image {
+        background-image: url(/img/bg-smoke.jpg);
+        background-size: cover;
+
+        .overlay {
+            background-color: rgba($saddle-brown, .55);
+
+
+            .content {
+                color: $rosy-brown-light;
+                font-size: 6rem;
+
+                .menu {
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    justify-content: center;
+                    margin-top: 35px;
+
+                    a {
+                        color: $rosy-brown-light;
+                        font-size: 25px;
+                        padding: 19px;
+                        background-color: rgba($peru, .45);
+                        margin: 0 10px;
+                        border-radius: 5px;
+                        transition: all .5s;
+                        @include states {
+                            color: $rosy-brown-light;
+                            background-color: rgba($peru, .9);
+                        }
+                    }
+                }
+            }
         }
     }
 }
