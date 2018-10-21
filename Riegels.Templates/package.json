@@ -4,9 +4,6 @@
   "version": "1.0.0",
   "description": "Templating Project",
   "author": "David Federspiel",
-  "scripts": {
-    "json": "json-server --routes src/data/routes.json  --watch src/data/generate.js"
-  },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
