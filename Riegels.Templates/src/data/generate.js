@@ -1,19 +1,69 @@
 // https://lodash.com/
 // https://github.com/Marak/faker.js
-
 module.exports = function () {
     var faker = require('faker');
     var _ = require('lodash');
-
     return {
-        articles: _.times(20, function (n) {
+        // build random algorithm to find permutations of various properties
+        heroVideos: _.times(5, function (n) {
             return {
+                id: n,
+                heading: "Test",
+                subHeading: "Subheading",
+                videos: [{
+                    id: 0,
+                    url: 'http://',
+                    mimeType: 'video/webm',
+                    date: faker.date.future
+                }]
+            }
+        }),
+        sitefinitySelectors: [{
+            id: 0,
+            tag: 'sf-library-selector',
+            attributes: {
+                type: {
+                    name: "type",
+                    default: "sf-library-selector"
+                },
+                mediaType: {
+                    name: "sf-media-type",
+                    default: "images"
+                },
+                multiSelect: {
+                    name: "sf-multiselect",
+                    default: "false"
+                },
+                sortable: {
+                    name: "sf-sortable",
+                    default: "false"
+                },
+                provider: {
+                    name: "sf-provider",
+                    default: "properties.ProviderName.PropertyValue"
+                },
+                selectedIds: {
+                    name: "sf-selected-ids",
+                    default: "properties.SelectedItemId.PropertyValue"
+                },
+                selectedItems: {
+                    name: "sf-selected-items",
+                    default: "properties.SelectedItem.PropertyValue"
+                }
+            }
+        }],
+        articles: _.times(20, function (n) {
+            var article = {
                 id: n,
                 title: faker.random.words(Math.ceil(Math.random() * 10)),
                 date: faker.date.past(),
-                authorId: faker.random.number({ min: 0, max: 99 }),
+                authorId: faker.random.number({
+                    min: 0,
+                    max: 19
+                }),
                 body: faker.lorem.words(Math.ceil(Math.random() * 100))
-            };
+            }; 
+            return article;
         }),
         authors: _.times(20, function (n) {
             return {
@@ -27,11 +77,48 @@ module.exports = function () {
         ipsum: _.times(1000, function (n) {
             return faker.lorem.words(1);
         }),
+        lipsum: _.times(1000, function (n) {
+            return faker.lorem.words(1);
+        }),
         events: {
             "kind": "calendar#events",
-            "defaultReminders": [],
+            //"defaultReminders": [],
             "description": "Events for Riegels Pipe and Tobacco",
-            "items": [
+            "items": [{
+                    "status": "confirmed",
+                    "kind": "calendar#event",
+                    "end": {
+                        "dateTime": "2018-10-12T12:00:00-04:00"
+                    },
+                    "created": "2018-10-11T23:55:32.000Z",
+                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
+                    "reminders": {
+                        "useDefault": true
+                    },
+                    "extendedProperties": {
+                        "private": {
+                            "everyoneDeclinedDismissed": "-1"
+                        }
+                    },
+                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
+                    "sequence": 0,
+                    "updated": "2018-10-11T23:55:32.193Z",
+                    "summary": "Event 12387628736asd",
+                    "start": {
+                        "dateTime": "2018-10-12T11:00:00-04:00"
+                    },
+                    "etag": "\"3078604264386000\"",
+                    "organizer": {
+                        "self": true,
+                        "displayName": "Justin!",
+                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
+                    },
+                    "creator": {
+                        "displayName": "David Federspiel",
+                        "email": "david@federnet.com"
+                    },
+                    "id": "25dkla6tdun80ucu84hseujicf"
+                },
                 {
                     "status": "confirmed",
                     "kind": "calendar#event",

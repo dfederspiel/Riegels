@@ -2,8 +2,7 @@
 import $ from "jquery";
 import Handlebars from 'handlebars';
 
-const eventsApi = 'http://localhost:8001/api/events';
-
+const eventsApi = '/api/events';
 class Calendar {
     constructor() {
         this.source = document.getElementById("entry-template").innerHTML;
