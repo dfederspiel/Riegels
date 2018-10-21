@@ -10,20 +10,24 @@ block main
         +row
             +col('col-md-12')
                 h1#about About
+                 +unsplash-cred('/img/bg-smoke.jpg', 'dfederspiel')
                 +ipsum(250)
         +row
             +col('col-md-12')
                 h1#history History
+                 +unsplash-cred('/img/scene-misc.jpg', 'dfederspiel')
                 p #[+ipsum(150)]
                 blockquote #[+ipsum(80)]
                 p #[+ipsum(150)]
         +row
             +col('col-md-12')
                 h1#events Events
+                 +unsplash-cred('/img/bg-smoke.jpg', 'dfederspiel')
                 +events
         +row
             +col("col-md-12")
                 H1 Sitefinity Designer Builder (Concept)
+                 +unsplash-cred('/img/bg-smoke.jpg', 'dfederspiel')
                 p Take this idea and run with it, create several pug mixins, rendering out designer data, and a subsequent library to pop in blocks of code, making it easy to design better designers, quickly catalog all varations of settings, or stackable controls to rapidly design
                 p Further, build way to create the underlying models, viewmodels, views, etc., based on the configured view for easy scaffolding.
                 p Even further, generate actual templates in the sitefinity codebase

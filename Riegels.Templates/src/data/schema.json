@@ -210,7 +210,7 @@
                     "type": "null"
                 },
                 "summary": {
-                    "type": "string"
+                    "$ref": "#/definitions/DisplayNameEnum"
                 },
                 "timeZone": {
                     "type": "string"
@@ -277,7 +277,7 @@
                     "type": "null"
                 },
                 "etag": {
-                    "type": "string"
+                    "$ref": "#/definitions/Etag"
                 },
                 "extendedProperties": {
                     "$ref": "#/definitions/ExtendedProperties"
@@ -306,13 +306,13 @@
                     ]
                 },
                 "iCalUID": {
-                    "type": "string"
+                    "$ref": "#/definitions/ICalUID"
                 },
                 "id": {
-                    "type": "string"
+                    "$ref": "#/definitions/ID"
                 },
                 "kind": {
-                    "type": "string"
+                    "$ref": "#/definitions/Kind"
                 },
                 "location": {
                     "type": "string"
@@ -348,10 +348,10 @@
                     "$ref": "#/definitions/End"
                 },
                 "status": {
-                    "type": "string"
+                    "$ref": "#/definitions/Status"
                 },
                 "summary": {
-                    "type": "string"
+                    "$ref": "#/definitions/ItemSummary"
                 },
                 "transparency": {
                     "type": "null"
@@ -411,7 +411,7 @@
             "additionalProperties": false,
             "properties": {
                 "fileId": {
-                    "type": "string"
+                    "$ref": "#/definitions/FileID"
                 },
                 "fileUrl": {
                     "type": "string",
@@ -430,10 +430,10 @@
                     ]
                 },
                 "mimeType": {
-                    "type": "string"
+                    "$ref": "#/definitions/MIMEType"
                 },
                 "title": {
-                    "type": "string"
+                    "$ref": "#/definitions/Title"
                 },
                 "ETag": {
                     "type": "null"
@@ -454,7 +454,7 @@
             "additionalProperties": false,
             "properties": {
                 "displayName": {
-                    "type": "string"
+                    "$ref": "#/definitions/DisplayNameEnum"
                 },
                 "email": {
                     "type": "string"
@@ -678,6 +678,77 @@
                 "name"
             ],
             "title": "MediaType"
+        },
+        "FileID": {
+            "type": "string",
+            "enum": [
+                "0B6LiBzzwZVZ_UEVNODV1WnVmUWM"
+            ],
+            "title": "FileID"
+        },
+        "MIMEType": {
+            "type": "string",
+            "enum": [
+                "image/jpeg"
+            ],
+            "title": "MIMEType"
+        },
+        "Title": {
+            "type": "string",
+            "enum": [
+                "Danielle - Grand Wayne (19 of 34) - Fixed.jpg"
+            ],
+            "title": "Title"
+        },
+        "DisplayNameEnum": {
+            "type": "string",
+            "enum": [
+                "David Federspiel",
+                "Riegels"
+            ],
+            "title": "DisplayNameEnum"
+        },
+        "Etag": {
+            "type": "string",
+            "enum": [
+                "\"3080297729744000\""
+            ],
+            "title": "Etag"
+        },
+        "ICalUID": {
+            "type": "string",
+            "enum": [
+                "1esbv3ohi9ngor9900ocva6fhn@google.com"
+            ],
+            "title": "ICalUID"
+        },
+        "ID": {
+            "type": "string",
+            "enum": [
+                "1esbv3ohi9ngor9900ocva6fhn"
+            ],
+            "title": "ID"
+        },
+        "Kind": {
+            "type": "string",
+            "enum": [
+                "calendar#event"
+            ],
+            "title": "Kind"
+        },
+        "Status": {
+            "type": "string",
+            "enum": [
+                "confirmed"
+            ],
+            "title": "Status"
+        },
+        "ItemSummary": {
+            "type": "string",
+            "enum": [
+                "Kickoff October Party"
+            ],
+            "title": "ItemSummary"
         }
     }
 }
