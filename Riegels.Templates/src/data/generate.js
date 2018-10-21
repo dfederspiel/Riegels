@@ -2,6 +2,7 @@
 // https://github.com/Marak/faker.js
 module.exports = function () {
     var faker = require('faker');
+    var moment = require('moment');
     var _ = require('lodash');
     return {
         // build random algorithm to find permutations of various properties
@@ -77,20 +78,18 @@ module.exports = function () {
         ipsum: _.times(1000, function (n) {
             return faker.lorem.words(1);
         }),
-        lipsum: _.times(1000, function (n) {
-            return faker.lorem.words(1);
-        }),
         events: {
             "kind": "calendar#events",
             //"defaultReminders": [],
             "description": "Events for Riegels Pipe and Tobacco",
-            "items": [{
+            items: _.times(5, function(n){
+                return {
                     "status": "confirmed",
                     "kind": "calendar#event",
                     "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
+                        "dateTime": faker.date.between(1,10)
                     },
-                    "created": "2018-10-11T23:55:32.000Z",
+                    "created": faker.date.between(1,10),
                     "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
                     "reminders": {
                         "useDefault": true
@@ -105,7 +104,7 @@ module.exports = function () {
                     "updated": "2018-10-11T23:55:32.193Z",
                     "summary": "Event 12387628736asd",
                     "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
+                        dateTime: faker.date.between(1,10)
                     },
                     "etag": "\"3078604264386000\"",
                     "organizer": {
@@ -118,113 +117,8 @@ module.exports = function () {
                         "email": "david@federnet.com"
                     },
                     "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
-                    "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
-                    },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event One",
-                    "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
-                    "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
-                    },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event Lindsay",
-                    "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
-                    "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
-                    },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event One",
-                    "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
                 }
-            ],
+            }),
             "updated": "2018-10-14T04:22:01.955Z",
             "summary": "Riegels",
             "etag": "\"p32sfr9mcha2ts0g\"",

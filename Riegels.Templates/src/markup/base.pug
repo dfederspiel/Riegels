@@ -6,7 +6,7 @@ include  grids/row
 include  content/article
 include  content/author
 include  content/unsplash-cred
-
+include content/contact
 
 include mixins/ipsum
 include mixins/style-guide
@@ -17,7 +17,7 @@ include mixins/sitefinity/sf-library-selector
 doctype html
 html(lang="en")
 	head
-		title Base Template
+		title Riegels
 		link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", 
 			rel="stylesheet", 
 			integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", 
@@ -26,6 +26,8 @@ html(lang="en")
 			rel="stylesheet")
 		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 	body.standard
+		.js-back-to-top
+			.button BackTo Top
 		header
 			block header
 				+grid
@@ -34,8 +36,9 @@ html(lang="en")
 							div.content(style='margin: 50px; text-align: center').
 								Riegel's Pipe &amp; Tobacco
 							.menu
-								a(href="#about") About
-								a(href="#events") Events
+								a.js-anchor(href="#about") About
+								a.js-anchor(href="#history") History
+								a.js-anchor(href="#events") Events
 		+unsplash-cred('/img/bg-brick.jpg', 'lindsaymergy')
 		main
 			block main
@@ -45,7 +48,7 @@ html(lang="en")
 				+grid
 					+row
 						+col("col-md-12")
-							div.content(style='margin: 50px; text-align: center').
-								Contact Information
+							div.content(style='margin: 50px; text-align: center')
+								+contact
 		script(src='/js/vendors.min.js')
 		script(src='/js/app.min.js')

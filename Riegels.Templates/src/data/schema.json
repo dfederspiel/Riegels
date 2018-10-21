@@ -36,12 +36,6 @@
                         "type": "string"
                     }
                 },
-                "lipsum": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "events": {
                     "$ref": "#/definitions/Events"
                 }
@@ -52,7 +46,6 @@
                 "events",
                 "heroVideos",
                 "ipsum",
-                "lipsum",
                 "sitefinitySelectors"
             ],
             "title": "Schema"

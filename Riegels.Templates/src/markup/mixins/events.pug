@@ -6,9 +6,9 @@ mixin events
                     <div class="entry">
                         <h2>{{summary}}</h2>
                         <div class="body">
-                            Created: {{created}}<br />
-                            Begins: {{start.dateTime}}<br />
-                            Ends: {{end.dateTime}}<br />
+                            Created: {{formatDate created}}<br />
+                            Begins: {{formatDate start.dateTime}}<br />
+                            Ends: {{formatDate end.dateTime}}<br />
                             Description: {{description}}<br />
                             Location: {{location}}<br />
                         </div>

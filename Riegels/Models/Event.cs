@@ -2,7 +2,7 @@
 //
 //    using QuickType;
 //
-//    var events = Events.FromJson(jsonString);
+//    var event = Event.FromJson(jsonString);
 
 namespace QuickType
 {
@@ -13,7 +13,7 @@ namespace QuickType
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class Events
+    public partial class Event
     {
         [JsonProperty("kind")]
         public string Kind { get; set; }
@@ -140,14 +140,14 @@ namespace QuickType
         public bool UseDefault { get; set; }
     }
 
-    public partial class Events
+    public partial class Event
     {
-        public static Events FromJson(string json) => JsonConvert.DeserializeObject<Events>(json, QuickType.Converter.Settings);
+        public static Event FromJson(string json) => JsonConvert.DeserializeObject<Event>(json, QuickType.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Events self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
+        public static string ToJson(this Event self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
     }
 
     internal static class Converter

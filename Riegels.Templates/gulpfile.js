@@ -1,13 +1,11 @@
 /// <binding BeforeBuild='default' ProjectOpened='default' />
 const gulp = require('gulp'),
-    pug = require('gulp-pug'),
-    minify = require('gulp-minify-css'),
+    pug = require('gulp-pug'), //https://www.npmjs.com/package/gulp-pug
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
     entities = require('html-entities').XmlEntities,
     replace = require('gulp-replace'),
-    data = require('gulp-data'),
     fs = require("fs"),
     colors = require('colors'),
     browserify = require('browserify'),
@@ -17,7 +15,8 @@ const gulp = require('gulp'),
     express = require('express'),
     browserSync = require('browser-sync').create(),
     reload = browserSync.reload,
-    exec = require("child_process").exec;
+    exec = require("child_process").exec,
+    cleanCSS = require('gulp-clean-css');
 
 const config = {
     vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'],
@@ -30,8 +29,12 @@ const config = {
         rootUrl: 'http://localhost:8000',
         modelServicePaths: [
             {
-                fileName: "Events",
+                fileName: "Event",
                 url: "/api/events"
+            },
+            {
+                fileName: "Article",
+                url: "/api/articles"
             },
             {
                 fileName: "Author",
@@ -39,7 +42,16 @@ const config = {
             }
         ]
     }
+}
 
+const log = (o) => {
+    for(var p in o){
+        console.log(`${colors.red('prop:')}${p}: ${o[p]}`);
+        if(typeof o[p] == 'object'){
+            console.log("DETAILS")
+            log(o[p]);
+        }
+    } 
 }
 
 let router = express.Router();
@@ -94,26 +106,28 @@ const json = (callback) => {
 };
 
 const html = (callback) => {
-    console.log(colors.cyan('transpiling PUG'));
+    console.log(colors.cyan('[HTML] Transpiling PUG'));
+    console.log(colors.bold('[HTML} Injecting db.json into pug hyperspace'));
+
+    const json = JSON.parse(fs.readFileSync('./src/data/db.json'));
     return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
-        .pipe(data(function (file) {
-            console.log(colors.bold('injecting db.json into pug hyperspace'));
-            return JSON.parse(fs.readFileSync('./src/data/db.json'));
-        }))
-        .pipe(pug({
-            pretty: true,
-            debug: false,
-            compileDebug: false
-        }).on('error', function (err) {
-            console.log(colors.red(err.message));
-            console.log(colors.grey(err.stack));
-            callback();
-        }))
-        .pipe(replace(entities.decode("&#65279;"), ''))
+        .pipe(
+            pug({
+                pretty: true,
+                debug: false,
+                compileDebug: false,
+                data: json
+            }).on('error', function (err) {
+                console.log(colors.bgWhite.red(err.toString()));
+                console.log(colors.red(err.message));
+                callback();
+            })
+        )
+        //.pipe(replace(entities.decode("&#65279;"), ''))
         .pipe(gulp.dest(templateDistributionLocation + '/'))
         .pipe(gulp.dest(webDistributionLocation + '/'))
         .on('end', function () {
-            console.log(colors.green('transpilation complete'));
+            console.log(colors.green('[HTML] Transpilation complete'));
             callback();
         });
 };
@@ -219,8 +233,8 @@ const scss = (callback) => {
             .pipe(sourcemaps.init())
             .pipe(sass().on('error', sass.logError))
             .pipe(concat(dest))
-            .pipe(minify())
             .pipe(postcss([autoprefixer()]))
+            .pipe(cleanCSS({compatibility: 'ie8'}))
             .pipe(sourcemaps.write('.'))
             .on('error', function (err) {
                 console.log(colors.red(err.toString()));
@@ -238,6 +252,7 @@ const serve = (callback) => {
     console.log(colors.cyan('Standing up your server'));
     build_routes();
     browserSync.init({
+        open: false,
         notify: true,
         logPrefix: 'Server Says:',
         port: config.browser_sync.port,
@@ -306,7 +321,7 @@ const watch = (callback) => {
     callback();
 };
 
-gulp.task('models', gulp.series(json))
+gulp.task('models', gulp.series(json, serve, createModels))
 gulp.task('serve', gulp.series(json, serve, watch));
 gulp.task('watch', gulp.series(watch));
 gulp.task('vendor', gulp.series(jsv));

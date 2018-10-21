@@ -1,8 +1,19 @@
-﻿import moment from 'moment';
+﻿//https://momentjs.com/docs
+import moment from 'moment';
+
+//https://jquery.com/
 import $ from "jquery";
+
+//https://handlebarsjs.com/
 import Handlebars from 'handlebars';
 
+
+Handlebars.registerHelper('formatDate', function(date) {
+    return moment(date).format("dddd, MMMM Do YYYY, h:mm a");
+  });
+
 const eventsApi = '/api/events';
+
 class Calendar {
     constructor() {
         this.source = document.getElementById("entry-template").innerHTML;
