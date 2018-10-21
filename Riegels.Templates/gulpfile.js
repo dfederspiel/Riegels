@@ -236,6 +236,7 @@ const scss = (callback) => {
             })
             .pipe(gulp.dest(templateDistributionLocation + '/css'))
             .pipe(gulp.dest(webDistributionLocation + '/css'))
+            .pipe(browserSync.stream())
             .on('end', function () {
                 callback();
             });
@@ -291,7 +292,9 @@ const watch = (callback) => {
 
     gulp.watch(['./src/styles/**/*.scss']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        scss(reload);
+        scss(() => {
+            //browserSync.stream();
+        });
     });
 
     gulp.watch(['./src/js/**/*.js']).on('all', function (event, path, stats) {
