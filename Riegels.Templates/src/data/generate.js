@@ -1,5 +1,12 @@
 // https://lodash.com/
 // https://github.com/Marak/faker.js
+
+const between = (min = 0, max = 1) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
 module.exports = function () {
     var faker = require('faker');
     var moment = require('moment');
@@ -113,12 +120,12 @@ module.exports = function () {
                     "conferenceData": null,
                     "created": "2018-10-21T16:30:07.000Z",
                     "creator": {
-                        "displayName": "David Federspiel",
+                        "displayName": `${faker.name.firstName()} ${faker.name.lastName()}`,
                         "email": "david@federnet.com",
                         "id": null,
                         "self": null
                     },
-                    "description": "<b>Lorem ipsum dolor sit amet</b>,&nbsp;<br><br>consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                    "description": faker.random.words(between(25, 170)),
                     "end": {
                         "date": null,
                         "dateTime": "2018-10-23T14:15:00-04:00",

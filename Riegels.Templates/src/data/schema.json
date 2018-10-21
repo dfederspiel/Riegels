@@ -210,7 +210,7 @@
                     "type": "null"
                 },
                 "summary": {
-                    "$ref": "#/definitions/Summary"
+                    "type": "string"
                 },
                 "timeZone": {
                     "type": "string"
@@ -454,7 +454,7 @@
             "additionalProperties": false,
             "properties": {
                 "displayName": {
-                    "$ref": "#/definitions/Summary"
+                    "type": "string"
                 },
                 "email": {
                     "type": "string"
@@ -678,14 +678,6 @@
                 "name"
             ],
             "title": "MediaType"
-        },
-        "Summary": {
-            "type": "string",
-            "enum": [
-                "David Federspiel",
-                "Riegels"
-            ],
-            "title": "Summary"
         }
     }
 }

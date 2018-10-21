@@ -17,29 +17,30 @@
             flex: 1 1 33%;
         }
         .entry {
-            margin: 10px 0;
+            flex-direction: column;
+            display: flex;
             height: 100%;
-            
-            .title {
-                margin: 0;
-                font-size: 3rem;
-                word-break: break-word;
-            }
             .body {
                 background-color: $rosy-brown-light;
                 margin: 20px;
                 border-radius: 5px;
                 padding: 25px;
-            }
-            .location {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 18px;
-                i {
-                    padding: 15px;
-                    font-size: 40px;
-                    color: $saddle-brown-light;
+                height: 100%;
+                .title {
+                    margin: 0;
+                    font-size: 3rem;
+                    word-break: break-word;
+                }
+                .location {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 18px;
+                    i {
+                        padding: 15px;
+                        font-size: 40px;
+                        color: $saddle-brown-light;
+                    }
                 }
             }
         }
