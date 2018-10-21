@@ -320,7 +320,4 @@ const watch = (callback) => {
 };
 
 gulp.task('models', gulp.series(json, serve, createModels))
-gulp.task('serve', gulp.series(json, serve, watch));
-gulp.task('watch', gulp.series(watch));
-gulp.task('vendor', gulp.series(jsv));
-gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, img, font), gulp.parallel(serve, watch, createModels)));
+gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), gulp.parallel(serve, watch, createModels)));

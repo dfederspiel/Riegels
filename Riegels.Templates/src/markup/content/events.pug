@@ -6,23 +6,29 @@ mixin events
                     <div class="entry">
                         <div class="body">
                             <h1 class="title">{{summary}}</h1>
-                            <h3>Who</h3>
-                            <div class="organizer">Organized By: {{organizer.displayName}}</div>
-                            <div class="creator">Created By: {{creator.displayName}}</div>
-
-                            <h3>When</h3>
-                            <div class="begis">Begins: {{formatDate start.dateTime}}</div>
-                            <div class="ends">Ends: {{formatDate end.dateTime}}</div>
-                            
-                            <h3>What</h3>
-                            <div class="description">{{{ description}}}</div>
-                            
-                            <h3>Where</h3>
-                            <div class="location">
-                                <i class="fa fa-map" aria-hidden="true"></i>
-                                <a href="https://www.google.com/maps/search/?api=1&query={{location}}">{{location}}</a>
+                            <div class="group">
+                                <h3>Who</h3>
+                                <div class="organizer">Organized By: {{organizer.displayName}}</div>
+                                <div class="creator">Created By: {{creator.displayName}}</div>
+                            </div>
+                            <div class="group">
+                                <h3>When</h3>
+                                <div class="begins">Begins: {{formatDate start.dateTime}}</div>
+                                <div class="ends">Ends: {{formatDate end.dateTime}}</div>
+                            </div>
+                            <div class="group">
+                                <h3>What</h3>
+                                <div class="description">{{{ description}}}</div>
+                            </div>
+                            <div class="group">
+                                <h3>Where</h3>
+                                <div class="location">
+                                    <i class="fa fa-map" aria-hidden="true"></i>
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{location}}">{{location}}</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             {{/each}}
+        

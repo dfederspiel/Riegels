@@ -125,7 +125,7 @@ module.exports = function () {
                         "id": null,
                         "self": null
                     },
-                    "description": faker.random.words(between(25, 170)),
+                    "description": faker.random.words(between(25, 68)),
                     "end": {
                         "date": null,
                         "dateTime": "2018-10-23T14:15:00-04:00",
