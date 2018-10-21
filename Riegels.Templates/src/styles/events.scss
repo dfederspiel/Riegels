@@ -28,9 +28,21 @@
                 word-break: break-word;
             }
             .body {
-                margin-top: 10px;
+                background-color: $rosy-brown-light;
+                margin: 20px;
                 border-radius: 5px;
                 padding: 25px;
+            }
+            .location {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 18px;
+                i {
+                    padding: 15px;
+                    font-size: 40px;
+                    color: $saddle-brown-light;
+                }
             }
         }
     }
