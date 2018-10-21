@@ -50,7 +50,7 @@ const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
 
 const createModels = (cb) => {
-    console.log(colors.cyan('Generating C# Models'));
+    console.log(colors.cyan('Generating C# Models'.big));
 
     exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
 
@@ -61,6 +61,8 @@ const createModels = (cb) => {
                 console.log(colors.green(stdout));
             if (stderr) {
                 console.log(colors.red(stderr));
+            if (err)
+                console.log(colors.red(err));
             }
         });
     });
@@ -79,33 +81,23 @@ const json = (callback) => {
             if (err)
                 console.log(err);
             else
-                console.log(colors.cyan('DB.json Saved'));
+                console.log(colors.green('DB.json Saved'.bold));
 
             if (callback)
                 callback();
         });
-    } catch {
-        console.log('there was a problem');
+    } catch (err) {
+        console.log(colors.red(err.toString()));
         if (callback)
             callback();
     }
 };
-// const jsonsrv = (callback) => {
-//     console.log(colors.cyan('Starting JSON Server'));
-//     server = jsonServer.create({
-//         verbosity: {
-//             level: "info",
-//             urlTracing: true
-//         }
-//     });
-//     server.use(jsonServer.defaults());
-//     server.use(jsonServer.router('./src/data/db.json'));
-//     callback();
-// }
+
 const html = (callback) => {
-    console.log(colors.cyan('Transpiling PUG'));
+    console.log(colors.cyan('transpiling PUG'));
     return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
         .pipe(data(function (file) {
+            console.log(colors.bold('injecting db.json into pug hyperspace'));
             return JSON.parse(fs.readFileSync('./src/data/db.json'));
         }))
         .pipe(pug({
@@ -121,6 +113,7 @@ const html = (callback) => {
         .pipe(gulp.dest(templateDistributionLocation + '/'))
         .pipe(gulp.dest(webDistributionLocation + '/'))
         .on('end', function () {
+            console.log(colors.green('transpilation complete'));
             callback();
         });
 };
@@ -268,7 +261,7 @@ const build_routes = () => {
     server = jsonServer.create({
         verbosity: {
             level: "info",
-            urlTracing: true
+            urlTracing: false
         }
     });
     server.use(jsonServer.defaults());
@@ -281,7 +274,7 @@ const build_routes = () => {
 };
 const watch = (callback) => {
     console.log(colors.cyan('Watching...'));
-    gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']).on('all', function (event, path, stats) {
+    gulp.watch(['./src/markup/**/*.pug']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         html(reload);
     });
