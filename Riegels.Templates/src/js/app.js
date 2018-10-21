@@ -1,4 +1,4 @@
-﻿import Calendar from './calendar';
+﻿import Calendar from './events';
 import $ from 'jquery';
 
 // Expose object to window

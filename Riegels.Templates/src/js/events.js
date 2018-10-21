@@ -8,9 +8,15 @@ import $ from "jquery";
 import Handlebars from 'handlebars';
 
 
-Handlebars.registerHelper('formatDate', function(date) {
+Handlebars.registerHelper('formatDate', function (date) {
     return moment(date).format("dddd, MMMM Do YYYY, h:mm a");
-  });
+});
+
+const htmlDecode = (input) => {
+    var e = document.createElement('div');
+    e.innerHTML = input;
+    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
 
 const eventsApi = '/api/events';
 

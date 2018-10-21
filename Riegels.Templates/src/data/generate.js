@@ -5,6 +5,19 @@ module.exports = function () {
     var moment = require('moment');
     var _ = require('lodash');
     return {
+        config: {
+            // Config for quicktype c# generators
+            quicktype: {
+                distributionPath: './dist/csharp/',
+                rootUrl: 'http://localhost:3000',
+                modelServicePaths: [
+                    {
+                        fileName: "Article",
+                        url: "/api/articles"
+                    }
+                ]
+            }
+        },
         // build random algorithm to find permutations of various properties
         heroVideos: _.times(5, function (n) {
             return {
@@ -63,7 +76,7 @@ module.exports = function () {
                     max: 19
                 }),
                 body: faker.lorem.words(Math.ceil(Math.random() * 100))
-            }; 
+            };
             return article;
         }),
         authors: _.times(20, function (n) {
@@ -79,52 +92,91 @@ module.exports = function () {
             return faker.lorem.words(1);
         }),
         events: {
-            "kind": "calendar#events",
-            //"defaultReminders": [],
+            "accessRole": "owner",
+            "defaultReminders": [],
             "description": "Events for Riegels Pipe and Tobacco",
-            items: _.times(5, function(n){
-                return {
-                    "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": faker.date.between(1,10)
+            "etag": "\"p330dptufjmcds0g\"",
+            "items": [{
+                "anyoneCanAddSelf": null,
+                "attachments": [{
+                    "fileId": "0B6LiBzzwZVZ_UEVNODV1WnVmUWM",
+                    "fileUrl": "https://drive.google.com/a/federnet.com/file/d/0B6LiBzzwZVZ_UEVNODV1WnVmUWM/view?usp=drive_web",
+                    "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/image/jpeg",
+                    "mimeType": "image/jpeg",
+                    "title": "Danielle - Grand Wayne (19 of 34) - Fixed.jpg",
+                    "ETag": null
+                }],
+                "attendees": null,
+                "attendeesOmitted": null,
+                "colorId": null,
+                "conferenceData": null,
+                "created": "2018-10-21T16:30:07.000Z",
+                "creator": {
+                    "displayName": "David Federspiel",
+                    "email": "david@federnet.com",
+                    "id": null,
+                    "self": null
+                },
+                "description": "<b>Lorem ipsum dolor sit amet</b>,&nbsp;<br><br>consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+                "end": {
+                    "date": null,
+                    "dateTime": "2018-10-23T14:15:00-04:00",
+                    "timeZone": null,
+                    "ETag": null
+                },
+                "endTimeUnspecified": null,
+                "etag": "\"3080297729744000\"",
+                "extendedProperties": {
+                    "private": {
+                        "everyoneDeclinedDismissed": "-1"
                     },
-                    "created": faker.date.between(1,10),
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event 12387628736asd",
-                    "start": {
-                        dateTime: faker.date.between(1,10)
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Justin!",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
-                }
-            }),
-            "updated": "2018-10-14T04:22:01.955Z",
+                    "shared": null
+                },
+                "gadget": null,
+                "guestsCanInviteOthers": null,
+                "guestsCanModify": null,
+                "guestsCanSeeOtherGuests": null,
+                "hangoutLink": null,
+                "htmlLink": "https://www.google.com/calendar/event?eid=MWVzYnYzb2hpOW5nb3I5OTAwb2N2YTZmaG4gZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
+                "iCalUID": "1esbv3ohi9ngor9900ocva6fhn@google.com",
+                "id": "1esbv3ohi9ngor9900ocva6fhn",
+                "kind": "calendar#event",
+                "location": "Riegel's Pipe & Tobacco Shop, 624 S Calhoun St, Fort Wayne, IN 46802, USA",
+                "locked": null,
+                "organizer": {
+                    "displayName": "Riegels",
+                    "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com",
+                    "id": null,
+                    "self": true
+                },
+                "originalStartTime": null,
+                "privateCopy": null,
+                "recurrence": null,
+                "recurringEventId": null,
+                "reminders": {
+                    "overrides": null,
+                    "useDefault": true
+                },
+                "sequence": 2,
+                "source": null,
+                "start": {
+                    "date": null,
+                    "dateTime": "2018-10-23T11:15:00-04:00",
+                    "timeZone": null,
+                    "ETag": null
+                },
+                "status": "confirmed",
+                "summary": "Kickoff October Party",
+                "transparency": null,
+                "updated": "2018-10-21T19:07:44.872Z",
+                "visibility": null
+            }],
+            "kind": "calendar#events",
+            "nextPageToken": null,
+            "nextSyncToken": null,
             "summary": "Riegels",
-            "etag": "\"p32sfr9mcha2ts0g\"",
-            "nextSyncToken": "CLj9psyKhd4CELj9psyKhd4CGAY=",
             "timeZone": "America/New_York",
-            "accessRole": "owner"
+            "updated": "2018-10-21T19:07:44.872Z"
         }
     };
 };

@@ -6,11 +6,18 @@ mixin events
                     <div class="entry">
                         <h2>{{summary}}</h2>
                         <div class="body">
-                            Created: {{formatDate created}}<br />
-                            Begins: {{formatDate start.dateTime}}<br />
-                            Ends: {{formatDate end.dateTime}}<br />
-                            Description: {{description}}<br />
-                            Location: {{location}}<br />
+                            <h3>Who</h3>
+                            <div class="organizer">{{organizer.displayName}}</div>
+
+                            <h3>When</h3>
+                            <div class="begis">Begins: {{formatDate start.dateTime}}</div>
+                            <div class="ends">Ends: {{formatDate end.dateTime}}</div>
+                            
+                            <h3>What</h3>
+                            <div class="description">{{{ description}}}</div>
+                            
+                            <h3>Where</h3>
+                            <div class="location">Location: {{location}}</div>
                         </div>
                     </div>
                 </div>
