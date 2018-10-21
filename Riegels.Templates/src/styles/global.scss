@@ -1,8 +1,10 @@
 @import 'variables';
+@import 'mixins';
 
 @import 'header';
 @import 'footer';
 @import 'unsplash-cred';
+@import 'events';
 
 :root {
     font-size: 62.5%;
@@ -14,3 +16,5 @@ body {
 
 h1 { color: $saddle-brown; }
 h2, h3, h4, h5 { color: $saddle-brown-light; }
+
+main { margin: 40px 0; }

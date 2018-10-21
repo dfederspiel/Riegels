@@ -1,0 +1,470 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Schema",
+    "definitions": {
+        "Schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "heroVideos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/HeroVideo"
+                    }
+                },
+                "sitefinitySelectors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SitefinitySelector"
+                    }
+                },
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Article"
+                    }
+                },
+                "authors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Author"
+                    }
+                },
+                "ipsum": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "lipsum": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "events": {
+                    "$ref": "#/definitions/Events"
+                }
+            },
+            "required": [
+                "articles",
+                "authors",
+                "events",
+                "heroVideos",
+                "ipsum",
+                "lipsum",
+                "sitefinitySelectors"
+            ],
+            "title": "Schema"
+        },
+        "Article": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "authorId": {
+                    "type": "integer"
+                },
+                "body": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "authorId",
+                "body",
+                "date",
+                "id",
+                "title"
+            ],
+            "title": "Article"
+        },
+        "Author": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "bio": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http",
+                        "https"
+                    ]
+                }
+            },
+            "required": [
+                "bio",
+                "firstName",
+                "id",
+                "lastName",
+                "website"
+            ],
+            "title": "Author"
+        },
+        "Events": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "kind": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Item"
+                    }
+                },
+                "updated": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "etag": {
+                    "type": "string"
+                },
+                "nextSyncToken": {
+                    "type": "string"
+                },
+                "timeZone": {
+                    "type": "string"
+                },
+                "accessRole": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "accessRole",
+                "description",
+                "etag",
+                "items",
+                "kind",
+                "nextSyncToken",
+                "summary",
+                "timeZone",
+                "updated"
+            ],
+            "title": "Events"
+        },
+        "Item": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "end": {
+                    "$ref": "#/definitions/End"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "iCalUID": {
+                    "type": "string"
+                },
+                "reminders": {
+                    "$ref": "#/definitions/Reminders"
+                },
+                "extendedProperties": {
+                    "$ref": "#/definitions/ExtendedProperties"
+                },
+                "htmlLink": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http",
+                        "https"
+                    ]
+                },
+                "sequence": {
+                    "type": "integer"
+                },
+                "updated": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "start": {
+                    "$ref": "#/definitions/End"
+                },
+                "etag": {
+                    "type": "string"
+                },
+                "organizer": {
+                    "$ref": "#/definitions/Organizer"
+                },
+                "creator": {
+                    "$ref": "#/definitions/Creator"
+                },
+                "id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "created",
+                "creator",
+                "end",
+                "etag",
+                "extendedProperties",
+                "htmlLink",
+                "iCalUID",
+                "id",
+                "kind",
+                "organizer",
+                "reminders",
+                "sequence",
+                "start",
+                "status",
+                "summary",
+                "updated"
+            ],
+            "title": "Item"
+        },
+        "Creator": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "displayName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "displayName",
+                "email"
+            ],
+            "title": "Creator"
+        },
+        "End": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "dateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "dateTime"
+            ],
+            "title": "End"
+        },
+        "ExtendedProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "private": {
+                    "$ref": "#/definitions/Private"
+                }
+            },
+            "required": [
+                "private"
+            ],
+            "title": "ExtendedProperties"
+        },
+        "Private": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "everyoneDeclinedDismissed": {
+                    "type": "string",
+                    "format": "integer"
+                }
+            },
+            "required": [
+                "everyoneDeclinedDismissed"
+            ],
+            "title": "Private"
+        },
+        "Organizer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "self": {
+                    "type": "boolean"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "displayName",
+                "email",
+                "self"
+            ],
+            "title": "Organizer"
+        },
+        "Reminders": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "useDefault": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "useDefault"
+            ],
+            "title": "Reminders"
+        },
+        "HeroVideo": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "heading": {
+                    "type": "string"
+                },
+                "subHeading": {
+                    "type": "string"
+                },
+                "videos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Video"
+                    }
+                }
+            },
+            "required": [
+                "heading",
+                "id",
+                "subHeading",
+                "videos"
+            ],
+            "title": "HeroVideo"
+        },
+        "Video": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "mimeType": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "mimeType",
+                "url"
+            ],
+            "title": "Video"
+        },
+        "SitefinitySelector": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "attributes": {
+                    "$ref": "#/definitions/Attributes"
+                }
+            },
+            "required": [
+                "attributes",
+                "id",
+                "tag"
+            ],
+            "title": "SitefinitySelector"
+        },
+        "Attributes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/MediaType"
+                },
+                "mediaType": {
+                    "$ref": "#/definitions/MediaType"
+                },
+                "multiSelect": {
+                    "$ref": "#/definitions/MediaType"
+                },
+                "sortable": {
+                    "$ref": "#/definitions/MediaType"
+                },
+                "provider": {
+                    "$ref": "#/definitions/MediaType"
+                },
+                "selectedIds": {
+                    "$ref": "#/definitions/MediaType"
+                },
+                "selectedItems": {
+                    "$ref": "#/definitions/MediaType"
+                }
+            },
+            "required": [
+                "mediaType",
+                "multiSelect",
+                "provider",
+                "selectedIds",
+                "selectedItems",
+                "sortable",
+                "type"
+            ],
+            "title": "Attributes"
+        },
+        "MediaType": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "default": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "default",
+                "name"
+            ],
+            "title": "MediaType"
+        }
+    }
+}

@@ -1,0 +1,32 @@
+.events {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    transition: all .5s;
+    .panel {
+        flex: 1 1 100%;
+
+        @include tablet {
+            flex: 0 0 50%;
+            &:nth-child(odd) {
+                .entry{
+                    margin-right: 25px;
+                }
+            }
+        }
+        .entry {
+            
+            background-color: $rosy-brown-light;
+            padding: 40px;
+            margin: 10px auto;
+
+            h2 {
+                margin: 0;
+                font-size: 30px;
+            }
+
+            .body {}
+        }
+    }
+}

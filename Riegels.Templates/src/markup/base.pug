@@ -10,6 +10,9 @@ include  content/unsplash-cred
 
 include mixins/ipsum
 include mixins/style-guide
+include mixins/events
+
+include mixins/sitefinity/sf-library-selector
 
 doctype html
 html(lang="en")
@@ -21,6 +24,7 @@ html(lang="en")
 			crossorigin="anonymous")    
 		link(href="/css/bundle.min.css", 
 			rel="stylesheet")
+		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 	body.standard
 		header
 			block header
@@ -29,8 +33,11 @@ html(lang="en")
 						+col("col-md-12")
 							div.content(style='margin: 50px; text-align: center').
 								Riegel's Pipe &amp; Tobacco
+							.menu
+								a(href="#about") About
+								a(href="#events") Events
+		+unsplash-cred('/img/bg-brick.jpg', 'lindsaymergy')
 		main
-			+unsplash-cred('/img/bg-brick.jpg', 'lindsaymergy')
 			block main
 
 		footer
@@ -40,18 +47,5 @@ html(lang="en")
 						+col("col-md-12")
 							div.content(style='margin: 50px; text-align: center').
 								Contact Information
-		script#entry-template(type='text/x-handlebars-template').
-			{{#each items}}
-				<div class="entry">
-					<h2>{{summary}}</h2>
-					<div class="body">
-						Created: {{created}}<br />
-						Begins: {{start.dateTime}}<br />
-						Ends: {{end.dateTime}}<br />
-						Description: {{description}}<br />
-						Location: {{location}}<br />
-					</div>
-				</div>
-			{{/each}}
 		script(src='/js/vendors.min.js')
 		script(src='/js/app.min.js')

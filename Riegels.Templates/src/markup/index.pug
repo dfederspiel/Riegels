@@ -6,12 +6,33 @@ mixin page(title, url)
 
 //- this block will overwrite what is in template.pug
 block main
-    div(style='margin: 50px;')
-        +grid
-            +row
-                +col("col-md-12")
-                    +style-guide
-            +row
-                +col("col-md-12")
-                    h1 Events
-                    .events
+    +grid
+        +row
+            +col('col-md-12')
+                h1#about About
+                +ipsum(100)
+        +row
+            +col('col-md-12')
+                h1#events Events
+                +events
+        +row
+            +col("col-md-12")
+                H1 Sitefinity Designer Builder (Concept)
+                p Take this idea and run with it, create several pug mixins, rendering out designer data, and a subsequent library to pop in blocks of code, making it easy to design better designers, quickly catalog all varations of settings, or stackable controls to rapidly design
+                p Further, build way to create the underlying models, viewmodels, views, etc., based on the configured view for easy scaffolding.
+                p Even further, generate actual templates in the sitefinity codebase
+                p Also maybe look as a snippet extension for vs code that would output pug/html, take params to build markup (comments)
+                p https://docs.microsoft.com/en-us/visualstudio/extensibility/starting-to-develop-visual-studio-extensions?view=vs-2017
+
+                h2 Image
+                +sf-library-selector
+                h2 Image Multiselect
+                +sf-library-selector('images', true)
+                h2 Video
+                +sf-library-selector('videos')
+                h2 Videos Multiselect
+                +sf-library-selector('videos', true)
+                h3 Document
+                +sf-library-selector('documents')
+                h2 Document Multiselect
+                +sf-library-selector('documents', true)

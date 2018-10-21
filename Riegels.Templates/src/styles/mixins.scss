@@ -1,0 +1,131 @@
+/*-------MEDIA QUERIES-------*/
+
+//do NOT use REM units in media queries because of browser differences
+@mixin phone() {
+    @media only screen and (min-width: 425px) {
+        @content;
+    }
+}
+
+@mixin tablet() {
+    @media only screen and (min-width: 768px) {
+        @content;
+    }
+}
+@mixin lg-tablet() {
+    @media only screen and (min-width: 992px) {
+        @content;
+    }
+}
+
+@mixin laptop() {
+    @media only screen and (min-width: 1024px) {
+        @content;
+    }
+}
+
+@mixin desktop() {
+    @media only screen and (min-width: 1440px) {
+        @content;
+    }
+}
+
+@mixin at($size) {
+    @media only screen and (min-width: $size + "px") {
+        @content;
+    }
+}
+
+/*-------A-TAG STATES-------*/
+
+@mixin states {
+    &:hover,
+    &:active,
+    &:focus {
+        @content;
+    }
+}
+
+/*-------THEMES-------*/
+
+@mixin theme($theme) {
+    $result: '';
+    @each $item in & {
+        $result: $result $theme $item ',';
+    }
+    @at-root #{$result} {
+        @content;
+    }
+}
+
+@mixin sf {
+    @include theme('.sfPageEditor'){
+        @content;
+    }
+}
+
+@mixin theme-join($theme) {
+    $result: '';
+    @each $item in & {
+        $result: $result $theme + $item ',';
+    }
+    @at-root #{$result} {
+        @content;
+    }
+}
+
+@mixin transition {
+    transition: all ease-in-out $transition-speed;
+}
+// @mixin theme-join($theme, $level: 1, $separator: '') {
+//     $result: '';
+//     @each $item in & {
+//         $section: '';
+//         $count: 0;
+//         @each $thing in $item {
+//             $count: $count + 1;
+//             @if $count == $level {
+//               $section: $section + $separator + $theme + ' ' + $thing;
+//             } @else {
+//               $section: $section + ' ' + $thing;
+//             }
+//             @debug $section;
+//         }
+//         $result: $result $section + ',';
+//     }
+//     @at-root #{$result} {
+//         @content;
+//     }
+// }
+
+@mixin theme-wrap($theme, $level: 1, $separator: ' ') {
+    $result: '';
+    @each $item in & {
+        $section: '';
+        $count: 0;
+        @each $thing in $item {
+            $count: $count + 1;
+            @if $count == $level {
+              $section: $section + $separator + $theme + ' ' + $thing;
+            } @else {
+              $section: $section + ' ' + $thing;
+            }
+            @debug $section;
+        }
+        $result: $result $section + ',';
+    }
+    @at-root #{$result} {
+        @content;
+    }
+}
+
+/*-----MIXIN FOR PROPER SPACING AROUND LAYOUT ELEMENTS-----*/
+@mixin layout-margin {
+    margin: $layout-mobile;
+    @include tablet {
+        margin: $layout-tablet;
+    }
+    @include laptop {
+        margin: $layout-desktop;
+    }
+}

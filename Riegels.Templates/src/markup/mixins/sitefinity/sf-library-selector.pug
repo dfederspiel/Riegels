@@ -1,0 +1,13 @@
+mixin sf-library-selector(mediaType = 'images', multiselect = 'false', sortable = false, provider = 'ProviderName', selectedItemIdFieldName = 'SelectedItemId',selectedItemFieldName = 'SelectedItem')
+    -var markup = `<sf-list-selector 
+    -   \tsf-library-selector
+    -   \tsf-media-type="${mediaType}" 
+    -   \tsf-multiselect=${multiselect} 
+    -   \tsf-sortable=${sortable}
+    -   \tsf-provider="properties.${provider}.PropertyValue"
+    -   \tsf-selected-ids="properties.${selectedItemIdFieldName}.PropertyValue"  
+    -   \tsf-selected-items="properties.${selectedItemFieldName}.PropertyValue"></sf-list-selector>`;
+    -var res = encodeURI(markup);
+    pre
+        code
+            =markup

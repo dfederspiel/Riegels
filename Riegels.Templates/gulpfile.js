@@ -1,43 +1,75 @@
 /// <binding BeforeBuild='default' ProjectOpened='default' />
 const gulp = require('gulp'),
     pug = require('gulp-pug'),
-    gutil = require('gulp-util'),
     minify = require('gulp-minify-css'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
     entities = require('html-entities').XmlEntities,
     replace = require('gulp-replace'),
-    rename = require('gulp-rename'),
-    browserSync = require('browser-sync'),
     data = require('gulp-data'),
     fs = require("fs"),
     colors = require('colors'),
-    reload = browserSync.reload,
-    babel = require('gulp-babel'),
     browserify = require('browserify'),
-    babelify = require('babelify'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
     uglify = require('gulp-uglify'),
-    log = require('gulplog'),
-    jsonServer = require("gulp-json-srv");
+    express = require('express'),
+    browserSync = require('browser-sync').create(),
+    reload = browserSync.reload,
+    exec = require("child_process").exec;
 
-const vendors = ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'];
-
-const server = jsonServer.create({
-    port: 8001,
-    verbosity: {
-        level: "info",
-        urlTracing: true
+const config = {
+    vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'],
+    browser_sync: {
+        port: 8000,
+        ui: 8080
     },
-    baseUrl: '/api'
-});
+    quicktype: {
+        distributionPath: '../Riegels/Models/',
+        rootUrl: 'http://localhost:8000',
+        modelServicePaths: [
+            {
+                fileName: "Events",
+                url: "/api/events"
+            },
+            {
+                fileName: "Author",
+                url: "/api/authors"
+            }
+        ]
+    }
+
+}
+
+let router = express.Router();
+let jsonServer = require("json-server");
+let server = null;
+
 const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
 
+const createModels = (cb) => {
+    console.log(colors.cyan('Generating C# Models'));
+
+    exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
+
+    config.quicktype.modelServicePaths.forEach(path => {
+        console.log("Item" + path.url, path.fileName);
+        exec(`quicktype ${config.quicktype.rootUrl}${path.url} -l csharp -o ${config.quicktype.distributionPath}${path.fileName}.cs`, function (err, stdout, stderr) {
+            if (stdout)
+                console.log(colors.green(stdout));
+            if (stderr) {
+                console.log(colors.red(stderr));
+            }
+        });
+    });
+    if (cb)
+        cb();
+}
+
 const json = (callback) => {
-    console.log(colors.green('Running JSON data generator task'));
+    console.log(colors.cyan('Generating a new DB'));
 
     delete require.cache[require.resolve('./src/data/generate.js')];
 
@@ -46,6 +78,8 @@ const json = (callback) => {
         fs.writeFile("./src/data/db.json", JSON.stringify(jsonData()), 'utf8', (err) => {
             if (err)
                 console.log(err);
+            else
+                console.log(colors.cyan('DB.json Saved'));
 
             if (callback)
                 callback();
@@ -56,14 +90,20 @@ const json = (callback) => {
             callback();
     }
 };
-
-const jsonsrv = () => {
-    return gulp.src("./src/data/db.json")
-        .pipe(server.pipe());
-};
-
+// const jsonsrv = (callback) => {
+//     console.log(colors.cyan('Starting JSON Server'));
+//     server = jsonServer.create({
+//         verbosity: {
+//             level: "info",
+//             urlTracing: true
+//         }
+//     });
+//     server.use(jsonServer.defaults());
+//     server.use(jsonServer.router('./src/data/db.json'));
+//     callback();
+// }
 const html = (callback) => {
-
+    console.log(colors.cyan('Transpiling PUG'));
     return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
         .pipe(data(function (file) {
             return JSON.parse(fs.readFileSync('./src/data/db.json'));
@@ -84,9 +124,8 @@ const html = (callback) => {
             callback();
         });
 };
-
 const img = (callback) => {
-
+    console.log(colors.cyan('Copying Images'));
     return gulp.src('./src/img/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/img'))
         .pipe(gulp.dest(webDistributionLocation + '/img'))
@@ -97,19 +136,19 @@ const img = (callback) => {
             callback();
         });
 };
-
 const font = () => {
+    console.log(colors.cyan('Copying Fonts'));
     return gulp.src('./src/fonts/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
 };
-
 const js = (callback) => {
-    console.log(colors.green('Running JavaScript Client task'));
+    console.log(colors.cyan('Bundling and Babeling JS'));
     var b = browserify({
-        entries: './src/js/app.js',
-        debug: true })
-        .external(vendors)
+            entries: './src/js/app.js',
+            debug: true
+        })
+        .external(config.vendors)
         .transform('babelify', {
             presets: ['@babel/preset-env']
         });
@@ -124,28 +163,30 @@ const js = (callback) => {
         })
         .pipe(source('app.min.js'))
         .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(sourcemaps.init({
+            loadMaps: true
+        }))
         .pipe(uglify())
         .on('error', function (err) {
             console.log(colors.red(err.toString()));
             callback();
         })
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/js/'))
+        .pipe(gulp.dest(templateDistributionLocation + '/js'))
+        .pipe(gulp.dest(webDistributionLocation + '/js'))
         .on('end', function () {
             callback();
         });
 };
-
 const jsv = (callback) => {
-    console.log(colors.green('Running JavaScript Vendor task'));
+    console.log(colors.cyan('Bundling and Babeling Vendor JS'));
     var b = browserify({
         debug: true
     }).transform('babelify', {
         presets: ['@babel/preset-env']
     });
 
-    vendors.forEach(lib => {
+    config.vendors.forEach(lib => {
         b.require(lib);
     });
 
@@ -159,18 +200,20 @@ const jsv = (callback) => {
         })
         .pipe(source('vendors.min.js'))
         .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(sourcemaps.init({
+            loadMaps: true
+        }))
         .pipe(uglify())
         .on('error', function (err) {
             console.log(colors.red(err.toString()));
             callback();
         })
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/js/'));
+        .pipe(gulp.dest(templateDistributionLocation + '/js'))
+        .pipe(gulp.dest(webDistributionLocation + '/js'));
 };
-
 const scss = (callback) => {
-    console.log(colors.green('Running SCSS task'));
+    console.log(colors.cyan('Transpiling Sass to Css'));
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
 
@@ -198,25 +241,46 @@ const scss = (callback) => {
 
     }
 };
-
 const serve = (callback) => {
-    browserSync({
+    console.log(colors.cyan('Standing up your server'));
+    build_routes();
+    browserSync.init({
         notify: true,
-        logPrefix: 'DAF',
-        reloadDelay: 1000,
-        port: 8000,
-        ui: {
-            port: 8080
-        },
+        logPrefix: 'Server Says:',
+        port: config.browser_sync.port,
         server: {
             baseDir: "./dist/",
             index: "index.html"
-        }
-    }, callback);
+        },
+        ui: {
+            port: config.browser_sync.ui
+        },
+        middleware: [function (req, res, next) {
+            router(req, res, next)
+        }]
+    }, function (err, bs) {
+        callback();
+    });
 };
-
+const build_routes = () => {
+    console.log(colors.cyan('Rebuilding routes'));
+    router = express.Router();
+    server = jsonServer.create({
+        verbosity: {
+            level: "info",
+            urlTracing: true
+        }
+    });
+    server.use(jsonServer.defaults());
+    server.use(jsonServer.router('./src/data/db.json'));
+    router.use('/api', server)
+    router.use('/test', (req, res, next) => {
+        res.render("Oh No")
+    })
+    //router.use(express.static('./dist'));
+};
 const watch = (callback) => {
-
+    console.log(colors.cyan('Watching...'));
     gulp.watch(['./src/markup/**/*.html', './src/markup/**/*.pug']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         html(reload);
@@ -234,19 +298,13 @@ const watch = (callback) => {
 
     gulp.watch(['./src/data/generate.js']).on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        server.kill(() => {
-            json();
+        json(() => {
+            build_routes();
+            createModels();
+            reload();
         });
-
     });
 
-    gulp.watch(['./src/data/*.json']).on('change', function (event, path, stats) {
-        console.log(colors.yellow('File ' + path + ' ' + event));
-        jsonsrv();
-        reload();
-    });
-
-    // TODO: Provide sync logic to remove files on different events
     gulp.watch(['./src/img/**/*']).on('add', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         img(reload);
@@ -255,7 +313,8 @@ const watch = (callback) => {
     callback();
 };
 
-gulp.task('serve', gulp.series(serve, watch));
+gulp.task('models', gulp.series(json))
+gulp.task('serve', gulp.series(json, serve, watch));
 gulp.task('watch', gulp.series(watch));
 gulp.task('vendor', gulp.series(jsv));
-gulp.task('default', gulp.series(json, jsonsrv, gulp.parallel(html, scss, js, jsv, img, font), serve, watch));
+gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, img, font), gulp.parallel(serve, watch, createModels)));
