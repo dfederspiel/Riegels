@@ -27,19 +27,19 @@ const config = {
 }
 
 const log = (o, level = 0) => {
-    if(level > 2)
+    if (level > 2)
         return;
-    for(var p in o){
+    for (var p in o) {
         console.log(`${colors.red('prop:')}${p}: ${o[p]}`);
-        if(o[p] != null && typeof o[p] == 'object'){
+        if (o[p] != null && typeof o[p] == 'object') {
             try {
                 console.log("DETAILS")
                 log(o[p], level + 1);
-            } catch(err){
+            } catch (err) {
                 console.log('CANT GET INFO')
             }
         }
-    } 
+    }
 }
 
 let router = express.Router();
@@ -51,29 +51,32 @@ const webDistributionLocation = "../Riegels";
 
 const createModels = (cb) => {
     console.log(colors.cyan('[QUICKTYPE] Generating C# Models'.big));
-
     delete require.cache[require.resolve('./src/data/generate.js')];
-    data = require('./src/data/generate.js')();
-    
-    exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
-    if (!fs.existsSync(data.config.quicktype.distributionPath)){
-        fs.mkdirSync(data.config.quicktype.distributionPath);
+
+    try {
+        data = require('./src/data/generate.js')();
+        exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
+        if (!fs.existsSync(data.config.quicktype.distributionPath)) {
+            fs.mkdirSync(data.config.quicktype.distributionPath);
+        }
+        data.config.quicktype.modelServicePaths.forEach(path => {
+            console.log("Item" + path.url, path.fileName);
+            exec(`quicktype ${data.config.quicktype.rootUrl}${path.url} -l csharp -o ${data.config.quicktype.distributionPath}${path.fileName}.cs`, function (err, stdout, stderr) {
+                if (stdout)
+                    console.log('[QUICKTYPE] ' + colors.green(stdout));
+                if (stderr) {
+                    console.log('[QUICKTYPE] ' + colors.red(stderr));
+                    if (err)
+                        console.log('[QUICKTYPE] ' + colors.red(err));
+                }
+            });
+        });
+    } catch (err) {
+        console.log(colors.red(err));
+        cb()
     }
 
-    data.config.quicktype.modelServicePaths.forEach(path => {
-        console.log("Item" + path.url, path.fileName);
-        exec(`quicktype ${data.config.quicktype.rootUrl}${path.url} -l csharp -o ${data.config.quicktype.distributionPath}${path.fileName}.cs`, function (err, stdout, stderr) {
-            if (stdout)
-                console.log('[QUICKTYPE] ' +colors.green(stdout));
-            if (stderr) {
-                console.log('[QUICKTYPE] ' +colors.red(stderr));
-            if (err)
-                console.log('[QUICKTYPE] ' +colors.red(err));
-            }
-        });
-    });
-    if (cb)
-        cb();
+    if (cb) cb();
 }
 
 const json = (callback) => {
@@ -82,11 +85,13 @@ const json = (callback) => {
     delete require.cache[require.resolve('./src/data/generate.js')];
 
     try {
-        var jsonData = require('./src/data/generate.js');
+        var jsonData = require('./src/data/generate.js')
         fs.writeFile("./src/data/db.json", JSON.stringify(jsonData()), 'utf8', (err) => {
-            if (err)
-                console.log('[JSON] ' + err);
-            else
+            if (err) {
+                console.log('[JSON] ' + colors.red(err));
+                if (callback)
+                    callback()
+            } else
                 console.log(colors.green('[JSON] DB.json Saved'.bold));
 
             if (callback)
@@ -157,7 +162,7 @@ const js = (callback) => {
     return b
         .bundle((err) => {
             if (err)
-                console.log('[JS] ' +colors.red(err.toString()));
+                console.log('[JS] ' + colors.red(err.toString()));
 
             if (callback)
                 callback();
@@ -194,7 +199,7 @@ const jsv = (callback) => {
     return b
         .bundle((err) => {
             if (err)
-                console.log('[JS V] ' +colors.red(err.toString()));
+                console.log('[JS V] ' + colors.red(err.toString()));
 
             if (callback)
                 callback();
@@ -228,7 +233,9 @@ const scss = (callback) => {
             .pipe(sass().on('error', sass.logError))
             .pipe(concat(dest))
             .pipe(postcss([autoprefixer()]))
-            .pipe(cleanCSS({compatibility: 'ie8'}))
+            .pipe(cleanCSS({
+                compatibility: 'ie8'
+            }))
             .pipe(sourcemaps.write('.'))
             .on('error', function (err) {
                 console.log(colors.red('[SCSS] ' + err.toString()));
@@ -250,13 +257,9 @@ const serve = (callback) => {
         open: false,
         notify: true,
         logPrefix: 'Server Says:',
-        //port: config.browser_sync.port,
         server: {
             baseDir: "./dist/",
             index: "index.html"
-        },
-        ui: {
-            //port: config.browser_sync.ui
         },
         middleware: [function (req, res, next) {
             router(req, res, next)
@@ -281,7 +284,6 @@ const build_routes = () => {
     router.use('/test', (req, res, next) => {
         res.render("Oh No")
     })
-    //router.use(express.static('./dist'));
 };
 const watch = (callback) => {
     console.log(colors.cyan('[WATCH] Watching...'));

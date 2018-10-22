@@ -118,7 +118,7 @@ module.exports = function () {
                     "attendeesOmitted": null,
                     "colorId": null,
                     "conferenceData": null,
-                    "created": "2018-10-21T16:30:07.000Z",
+                    "created": faker.date.soon,
                     "creator": {
                         "displayName": `${faker.name.firstName()} ${faker.name.lastName()}`,
                         "email": "david@federnet.com",
@@ -128,7 +128,7 @@ module.exports = function () {
                     "description": faker.random.words(between(25, 68)),
                     "end": {
                         "date": null,
-                        "dateTime": "2018-10-23T14:15:00-04:00",
+                        "dateTime": faker.date.soon,
                         "timeZone": null,
                         "ETag": null
                     },
@@ -152,7 +152,7 @@ module.exports = function () {
                     "location": "Riegel's Pipe & Tobacco Shop, 624 S Calhoun St, Fort Wayne, IN 46802, USA",
                     "locked": null,
                     "organizer": {
-                        "displayName": "Riegels",
+                        "displayName": faker.company.companyName(),
                         "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com",
                         "id": null,
                         "self": true
@@ -169,14 +169,14 @@ module.exports = function () {
                     "source": null,
                     "start": {
                         "date": null,
-                        "dateTime": "2018-10-23T11:15:00-04:00",
+                        "dateTime": faker.date.soon,
                         "timeZone": null,
                         "ETag": null
                     },
                     "status": "confirmed",
-                    "summary": "Kickoff October Party",
+                    "summary": faker.random.words(between(3, 8)),
                     "transparency": null,
-                    "updated": "2018-10-21T19:07:44.872Z",
+                    "updated": faker.date.soon,
                     "visibility": null
                 }
             }),

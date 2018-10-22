@@ -260,10 +260,6 @@
                 "conferenceData": {
                     "type": "null"
                 },
-                "created": {
-                    "type": "string",
-                    "format": "date-time"
-                },
                 "creator": {
                     "$ref": "#/definitions/Creator"
                 },
@@ -356,10 +352,6 @@
                 "transparency": {
                     "type": "null"
                 },
-                "updated": {
-                    "type": "string",
-                    "format": "date-time"
-                },
                 "visibility": {
                     "type": "null"
                 }
@@ -371,7 +363,6 @@
                 "attendeesOmitted",
                 "colorId",
                 "conferenceData",
-                "created",
                 "creator",
                 "description",
                 "end",
@@ -401,7 +392,6 @@
                 "status",
                 "summary",
                 "transparency",
-                "updated",
                 "visibility"
             ],
             "title": "Item"
@@ -488,10 +478,6 @@
                 "date": {
                     "type": "null"
                 },
-                "dateTime": {
-                    "type": "string",
-                    "format": "date-time"
-                },
                 "timeZone": {
                     "type": "null"
                 },
@@ -502,7 +488,6 @@
             "required": [
                 "ETag",
                 "date",
-                "dateTime",
                 "timeZone"
             ],
             "title": "End"
