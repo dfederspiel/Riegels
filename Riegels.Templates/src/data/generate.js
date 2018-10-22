@@ -17,12 +17,14 @@ module.exports = function () {
             quicktype: {
                 distributionPath: './dist/csharp/',
                 rootUrl: 'http://localhost:3000',
-                modelServicePaths: [
-                    {
-                        fileName: "Article",
-                        url: "/api/articles"
-                    }
-                ]
+                modelServicePaths: [{
+                    fileName: "Article",
+                    url: "/api/articles"
+                },
+                {
+                    fileName: "HeroVideo",
+                    url: "/api/heroVideos"
+                }]
             }
         },
         // build random algorithm to find permutations of various properties
@@ -101,7 +103,7 @@ module.exports = function () {
         events: {
             "accessRole": "owner",
             "defaultReminders": [],
-            "description": "Events for Riegels Pipe and Tobacco",
+            "description": faker.random.words(between(3,8)),
             "etag": "\"p330dptufjmcds0g\"",
             items: _.times(5, () => {
                 return {

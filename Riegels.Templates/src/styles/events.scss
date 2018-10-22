@@ -9,20 +9,17 @@
     }
     .event {
         flex: 1 1 100%;
-
         @include lg-tablet {
             flex: 1 1 50%;
-        }
-        @include desktop {
-            flex: 1 1 33%;
         }
         .entry {
             flex-direction: column;
             display: flex;
             height: 100%;
+            padding: 20px;
             .body {
                 background-color: $rosy-brown-light;
-                margin: 20px;
+                //margin: 20px;
                 border-radius: 5px;
                 padding: 25px;
                 height: 100%;
@@ -34,15 +31,25 @@
                     font-size: 3rem;
                     word-break: break-word;
                 }
-                .location {
+                a.location {
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     font-size: 18px;
+                    font-weight: bold;
+                    border: solid 2px $saddle-brown-light;
+                    border-radius: 5px;
+                    padding: 15px;
                     i {
                         padding: 15px;
                         font-size: 40px;
                         color: $saddle-brown-light;
+                        transition: all .5s;
+                    }
+                    transition: all .5s;
+                    @include states {
+                        text-decoration: none;
+                        background-color: $peru;
                     }
                 }
             }

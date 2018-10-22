@@ -1,11 +1,8 @@
-/// <binding BeforeBuild='default' ProjectOpened='default' />
 const gulp = require('gulp'),
     pug = require('gulp-pug'), //https://www.npmjs.com/package/gulp-pug
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
-    entities = require('html-entities').XmlEntities,
-    replace = require('gulp-replace'),
     fs = require("fs"),
     colors = require('colors'),
     browserify = require('browserify'),
@@ -19,7 +16,7 @@ const gulp = require('gulp'),
     cleanCSS = require('gulp-clean-css');
 
 const config = {
-    vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'],
+    vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars', 'scrollreveal'],
     browser_sync: {
         port: 8000,
         ui: 8080
@@ -73,9 +70,8 @@ const createModels = (cb) => {
         });
     } catch (err) {
         console.log(colors.red(err));
-        cb()
+        if(cb) cb();
     }
-
     if (cb) cb();
 }
 
@@ -269,7 +265,7 @@ const serve = (callback) => {
         callback();
     });
 };
-const build_routes = () => {
+const build_routes = (cb) => {
     console.log(colors.cyan('[ROUTE] Rebuilding routes'));
     router = express.Router();
     server = jsonServer.create({
@@ -284,6 +280,7 @@ const build_routes = () => {
     router.use('/test', (req, res, next) => {
         res.render("Oh No")
     })
+    if(cb) cb();
 };
 const watch = (callback) => {
     console.log(colors.cyan('[WATCH] Watching...'));
@@ -306,11 +303,7 @@ const watch = (callback) => {
 
     gulp.watch(['./src/data/generate.js']).on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        json(() => {
-            build_routes();
-            createModels();
-            reload();
-        });
+        json(build_routes(createModels(reload)));
     });
 
     gulp.watch(['./src/img/**/*']).on('add', function (event, path, stats) {

@@ -2,7 +2,7 @@ mixin events
     .events
         script#entry-template(type='text/x-handlebars-template').
             {{#each items}}
-                <div class="event">
+                <div class="event reveal">
                     <div class="entry">
                         <div class="body">
                             <h1 class="title">{{summary}}</h1>
@@ -22,10 +22,10 @@ mixin events
                             </div>
                             <div class="group">
                                 <h3>Where</h3>
-                                <div class="location">
-                                    <i class="fa fa-map" aria-hidden="true"></i>
-                                    <a href="https://www.google.com/maps/search/?api=1&query={{location}}">{{location}}</a>
-                                </div>
+                                <a class="location" href="https://www.google.com/maps/search/?api=1&query={{location}}">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <strong>{{{address location}}}</strong>
+                                </a>
                             </div>
                         </div>
                     </div>

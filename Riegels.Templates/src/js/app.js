@@ -1,11 +1,9 @@
 ﻿import Calendar from './events';
 import $ from 'jquery';
+import ScrollReveal from 'scrollreveal'
 
 // Expose object to window
 window.Calendar = Calendar;
-
-let calendar = new Calendar();
-calendar.getEvents();
 
 // Scroll to sections
 $('.js-anchor').click((evt) => {
@@ -27,3 +25,15 @@ $(document).scroll(function(){
     else
         $('.js-back-to-top').removeClass('visible');
 })
+
+var reveal = {
+    opacity: 0,
+    reset: true,
+};
+
+let calendar = new Calendar();
+calendar.getEvents(() => {
+    ScrollReveal().reveal('.events .reveal', reveal);
+});
+
+ScrollReveal().reveal('.reveal', reveal);

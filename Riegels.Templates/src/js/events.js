@@ -12,6 +12,10 @@ Handlebars.registerHelper('formatDate', function (date) {
     return moment(date).format("dddd, MMMM Do YYYY, h:mm a");
 });
 
+Handlebars.registerHelper('address', (address) => {
+    return address;
+});
+
 const eventsApi = '/api/events';
 
 class Calendar {
@@ -21,7 +25,7 @@ class Calendar {
         this.getEvents = this.getEvents.bind(this);
     }
 
-    getEvents() {
+    getEvents(cb) {
         let hTemplate = this.template;
         $.get(eventsApi, function (response) {
             $.each(response.items, function (idx, item) {
@@ -30,6 +34,7 @@ class Calendar {
             var context = response;
             var html = hTemplate(context);
             $('.events').html(html);
+            if(cb) cb();
         });
     }
 }
