@@ -18,20 +18,23 @@ header {
                     align-items: center;
                     justify-content: center;
                     margin-top: 35px;
-
-                    a {
+                    .item {
                         flex: 1 1 33%;
-                        color: $rosy-brown-light;
-                        font-size: 25px;
-                        padding: 20px;
-                        background-color: rgba($peru, .45);
-                        margin: 20px;
-                        box-sizing: content-box;
-                        border-radius: 5px;
-                        transition: all .5s;
-                        @include states {
+                        a {
+                            
                             color: $rosy-brown-light;
-                            background-color: rgba($peru, .9);
+                            font-size: 25px;
+                            padding: 20px;
+                            display: block;
+                            background-color: rgba($peru, .45);
+                            margin: 20px;
+                            box-sizing: content-box;
+                            border-radius: 5px;
+                            transition: all .5s;
+                            @include states {
+                                color: $rosy-brown-light;
+                                background-color: rgba($peru, .9);
+                            }
                         }
                     }
                 }
