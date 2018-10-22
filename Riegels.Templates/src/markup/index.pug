@@ -9,30 +9,54 @@ block main
     +grid
         +row
             +col('col-md-12')
-                h1#about About
-                +ipsum(100)
+                .section
+                    .reveal
+                        h1#about About
+                        +unsplash-cred('/img/bg-smoke.jpg', 'dfederspiel')
+                        +ipsum(250)
         +row
             +col('col-md-12')
-                h1#events Events
-                +events
+                .section
+                    .reveal
+                        h1#history History
+                        +unsplash-cred('/img/scene-misc.jpg', 'dfederspiel')
+                        p #[+ipsum(150)]
+                        blockquote #[+ipsum(80)]
+                        p #[+ipsum(150)]
+        +row
+            +col('col-md-12')
+                .section
+                    .reveal
+                        h1#events Events
+                        +unsplash-cred('/img/bg-smoke.jpg', 'dfederspiel')
+                        p #[+ipsum(180)]
+                    +events
         +row
             +col("col-md-12")
-                H1 Sitefinity Designer Builder (Concept)
-                p Take this idea and run with it, create several pug mixins, rendering out designer data, and a subsequent library to pop in blocks of code, making it easy to design better designers, quickly catalog all varations of settings, or stackable controls to rapidly design
-                p Further, build way to create the underlying models, viewmodels, views, etc., based on the configured view for easy scaffolding.
-                p Even further, generate actual templates in the sitefinity codebase
-                p Also maybe look as a snippet extension for vs code that would output pug/html, take params to build markup (comments)
-                p https://docs.microsoft.com/en-us/visualstudio/extensibility/starting-to-develop-visual-studio-extensions?view=vs-2017
-
-                h2 Image
-                +sf-library-selector
-                h2 Image Multiselect
-                +sf-library-selector('images', true)
-                h2 Video
-                +sf-library-selector('videos')
-                h2 Videos Multiselect
-                +sf-library-selector('videos', true)
-                h3 Document
-                +sf-library-selector('documents')
-                h2 Document Multiselect
-                +sf-library-selector('documents', true)
+                .section
+                    .reveal
+                        H1 Sitefinity Designer Builder (Concept)
+                        +unsplash-cred('/img/bg-smoke.jpg', 'dfederspiel')
+                        p Take this idea and run with it, create several pug mixins, rendering out designer data, and a subsequent library to pop in blocks of code, making it easy to design better designers, quickly catalog all varations of settings, or stackable controls to rapidly design
+                        p Further, build way to create the underlying models, viewmodels, views, etc., based on the configured view for easy scaffolding.
+                        p Even further, generate actual templates in the sitefinity codebase
+                        p Also maybe look as a snippet extension for vs code that would output pug/html, take params to build markup (comments)
+                        p https://docs.microsoft.com/en-us/visualstudio/extensibility/starting-to-develop-visual-studio-extensions?view=vs-2017
+                    .reveal
+                        h2 Image
+                        +sf-library-selector
+                    .reveal
+                        h2 Image Multiselect
+                        +sf-library-selector('images', true)
+                    .reveal
+                        h2 Video
+                        +sf-library-selector('videos')
+                    .reveal
+                        h2 Videos Multiselect
+                        +sf-library-selector('videos', true)
+                    .reveal
+                        h3 Document
+                        +sf-library-selector('documents')
+                    .reveal
+                        h2 Document Multiselect
+                        +sf-library-selector('documents', true)

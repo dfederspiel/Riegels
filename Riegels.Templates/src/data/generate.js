@@ -1,9 +1,32 @@
 // https://lodash.com/
 // https://github.com/Marak/faker.js
+
+const between = (min = 0, max = 1) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
 module.exports = function () {
     var faker = require('faker');
+    var moment = require('moment');
     var _ = require('lodash');
     return {
+        config: {
+            // Config for quicktype c# generators
+            quicktype: {
+                distributionPath: './dist/csharp/',
+                rootUrl: 'http://localhost:3000',
+                modelServicePaths: [{
+                    fileName: "Article",
+                    url: "/api/articles"
+                },
+                {
+                    fileName: "HeroVideo",
+                    url: "/api/heroVideos"
+                }]
+            }
+        },
         // build random algorithm to find permutations of various properties
         heroVideos: _.times(5, function (n) {
             return {
@@ -62,7 +85,7 @@ module.exports = function () {
                     max: 19
                 }),
                 body: faker.lorem.words(Math.ceil(Math.random() * 100))
-            }; 
+            };
             return article;
         }),
         authors: _.times(20, function (n) {
@@ -77,160 +100,94 @@ module.exports = function () {
         ipsum: _.times(1000, function (n) {
             return faker.lorem.words(1);
         }),
-        lipsum: _.times(1000, function (n) {
-            return faker.lorem.words(1);
-        }),
         events: {
-            "kind": "calendar#events",
-            //"defaultReminders": [],
-            "description": "Events for Riegels Pipe and Tobacco",
-            "items": [{
-                    "status": "confirmed",
-                    "kind": "calendar#event",
+            "accessRole": "owner",
+            "defaultReminders": [],
+            "description": faker.random.words(between(3,8)),
+            "etag": "\"p330dptufjmcds0g\"",
+            items: _.times(5, () => {
+                return {
+                    "anyoneCanAddSelf": null,
+                    "attachments": [{
+                        "fileId": "0B6LiBzzwZVZ_UEVNODV1WnVmUWM",
+                        "fileUrl": "https://drive.google.com/a/federnet.com/file/d/0B6LiBzzwZVZ_UEVNODV1WnVmUWM/view?usp=drive_web",
+                        "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/image/jpeg",
+                        "mimeType": "image/jpeg",
+                        "title": "Danielle - Grand Wayne (19 of 34) - Fixed.jpg",
+                        "ETag": null
+                    }],
+                    "attendees": null,
+                    "attendeesOmitted": null,
+                    "colorId": null,
+                    "conferenceData": null,
+                    "created": faker.date.soon,
+                    "creator": {
+                        "displayName": `${faker.name.firstName()} ${faker.name.lastName()}`,
+                        "email": "david@federnet.com",
+                        "id": null,
+                        "self": null
+                    },
+                    "description": faker.random.words(between(25, 68)),
                     "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
+                        "date": null,
+                        "dateTime": faker.date.soon,
+                        "timeZone": null,
+                        "ETag": null
                     },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
+                    "endTimeUnspecified": null,
+                    "etag": "\"3080297729744000\"",
                     "extendedProperties": {
                         "private": {
                             "everyoneDeclinedDismissed": "-1"
-                        }
+                        },
+                        "shared": null
                     },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event 12387628736asd",
-                    "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Justin!",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
-                    "status": "confirmed",
+                    "gadget": null,
+                    "guestsCanInviteOthers": null,
+                    "guestsCanModify": null,
+                    "guestsCanSeeOtherGuests": null,
+                    "hangoutLink": null,
+                    "htmlLink": "https://www.google.com/calendar/event?eid=MWVzYnYzb2hpOW5nb3I5OTAwb2N2YTZmaG4gZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
+                    "iCalUID": "1esbv3ohi9ngor9900ocva6fhn@google.com",
+                    "id": "1esbv3ohi9ngor9900ocva6fhn",
                     "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
+                    "location": "Riegel's Pipe & Tobacco Shop, 624 S Calhoun St, Fort Wayne, IN 46802, USA",
+                    "locked": null,
+                    "organizer": {
+                        "displayName": faker.company.companyName(),
+                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com",
+                        "id": null,
+                        "self": true
                     },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
+                    "originalStartTime": null,
+                    "privateCopy": null,
+                    "recurrence": null,
+                    "recurringEventId": null,
                     "reminders": {
+                        "overrides": null,
                         "useDefault": true
                     },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event One",
+                    "sequence": 2,
+                    "source": null,
                     "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
+                        "date": null,
+                        "dateTime": faker.date.soon,
+                        "timeZone": null,
+                        "ETag": null
                     },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
                     "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
-                    },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event Lindsay",
-                    "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
-                },
-                {
-                    "status": "confirmed",
-                    "kind": "calendar#event",
-                    "end": {
-                        "dateTime": "2018-10-12T12:00:00-04:00"
-                    },
-                    "created": "2018-10-11T23:55:32.000Z",
-                    "iCalUID": "25dkla6tdun80ucu84hseujicf@google.com",
-                    "reminders": {
-                        "useDefault": true
-                    },
-                    "extendedProperties": {
-                        "private": {
-                            "everyoneDeclinedDismissed": "-1"
-                        }
-                    },
-                    "htmlLink": "https://www.google.com/calendar/event?eid=MjVka2xhNnRkdW44MHVjdTg0aHNldWppY2YgZmVkZXJuZXQuY29tX291dDhyNzJ2Z3M4cWFjZWE4MWhhaG50bWQwQGc",
-                    "sequence": 0,
-                    "updated": "2018-10-11T23:55:32.193Z",
-                    "summary": "Event One",
-                    "start": {
-                        "dateTime": "2018-10-12T11:00:00-04:00"
-                    },
-                    "etag": "\"3078604264386000\"",
-                    "organizer": {
-                        "self": true,
-                        "displayName": "Riegels",
-                        "email": "federnet.com_out8r72vgs8qacea81hahntmd0@group.calendar.google.com"
-                    },
-                    "creator": {
-                        "displayName": "David Federspiel",
-                        "email": "david@federnet.com"
-                    },
-                    "id": "25dkla6tdun80ucu84hseujicf"
+                    "summary": faker.random.words(between(3, 8)),
+                    "transparency": null,
+                    "updated": faker.date.soon,
+                    "visibility": null
                 }
-            ],
-            "updated": "2018-10-14T04:22:01.955Z",
+            }),
+            "kind": "calendar#events",
+            "nextPageToken": null,
+            "nextSyncToken": null,
             "summary": "Riegels",
-            "etag": "\"p32sfr9mcha2ts0g\"",
-            "nextSyncToken": "CLj9psyKhd4CELj9psyKhd4CGAY=",
             "timeZone": "America/New_York",
-            "accessRole": "owner"
+            "updated": "2018-10-21T19:07:44.872Z"
         }
     };
 };

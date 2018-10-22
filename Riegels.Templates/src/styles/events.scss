@@ -1,32 +1,58 @@
 .events {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-around;
     transition: all .5s;
-    .panel {
+    @include tablet {
+        flex-direction: row;
+    }
+    .event {
         flex: 1 1 100%;
-
-        @include tablet {
-            flex: 0 0 50%;
-            &:nth-child(odd) {
-                .entry{
-                    margin-right: 25px;
-                }
-            }
+        @include lg-tablet {
+            flex: 1 1 50%;
         }
         .entry {
-            
-            background-color: $rosy-brown-light;
-            padding: 40px;
-            margin: 10px auto;
-
-            h2 {
-                margin: 0;
-                font-size: 30px;
+            flex-direction: column;
+            display: flex;
+            height: 100%;
+            padding: 20px;
+            .body {
+                background-color: $rosy-brown-light;
+                //margin: 20px;
+                border-radius: 5px;
+                padding: 25px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                .title {
+                    margin: 0;
+                    font-size: 3rem;
+                    word-break: break-word;
+                }
+                a.location {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 18px;
+                    font-weight: bold;
+                    border: solid 2px $saddle-brown-light;
+                    border-radius: 5px;
+                    padding: 15px;
+                    i {
+                        padding: 15px;
+                        font-size: 40px;
+                        color: $saddle-brown-light;
+                        transition: all .5s;
+                    }
+                    transition: all .5s;
+                    @include states {
+                        text-decoration: none;
+                        background-color: $peru;
+                    }
+                }
             }
-
-            .body {}
         }
     }
 }

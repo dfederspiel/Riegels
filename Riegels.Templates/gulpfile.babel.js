@@ -1,13 +1,8 @@
-/// <binding BeforeBuild='default' ProjectOpened='default' />
 const gulp = require('gulp'),
-    pug = require('gulp-pug'),
-    minify = require('gulp-minify-css'),
+    pug = require('gulp-pug'), //https://www.npmjs.com/package/gulp-pug
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
-    entities = require('html-entities').XmlEntities,
-    replace = require('gulp-replace'),
-    data = require('gulp-data'),
     fs = require("fs"),
     colors = require('colors'),
     browserify = require('browserify'),
@@ -17,29 +12,31 @@ const gulp = require('gulp'),
     express = require('express'),
     browserSync = require('browser-sync').create(),
     reload = browserSync.reload,
-    exec = require("child_process").exec;
+    exec = require("child_process").exec,
+    cleanCSS = require('gulp-clean-css');
 
 const config = {
-    vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars'],
+    vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars', 'scrollreveal'],
     browser_sync: {
         port: 8000,
         ui: 8080
-    },
-    quicktype: {
-        distributionPath: '../Riegels/Models/',
-        rootUrl: 'http://localhost:8000',
-        modelServicePaths: [
-            {
-                fileName: "Events",
-                url: "/api/events"
-            },
-            {
-                fileName: "Author",
-                url: "/api/authors"
-            }
-        ]
     }
+}
 
+const log = (o, level = 0) => {
+    if (level > 2)
+        return;
+    for (var p in o) {
+        console.log(`${colors.red('prop:')}${p}: ${o[p]}`);
+        if (o[p] != null && typeof o[p] == 'object') {
+            try {
+                console.log("DETAILS")
+                log(o[p], level + 1);
+            } catch (err) {
+                console.log('CANT GET INFO')
+            }
+        }
+    }
 }
 
 let router = express.Router();
@@ -50,93 +47,105 @@ const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
 
 const createModels = (cb) => {
-    console.log(colors.cyan('Generating C# Models'.big));
+    console.log(colors.cyan('[QUICKTYPE] Generating C# Models'.big));
+    delete require.cache[require.resolve('./src/data/generate.js')];
 
-    exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
-
-    config.quicktype.modelServicePaths.forEach(path => {
-        console.log("Item" + path.url, path.fileName);
-        exec(`quicktype ${config.quicktype.rootUrl}${path.url} -l csharp -o ${config.quicktype.distributionPath}${path.fileName}.cs`, function (err, stdout, stderr) {
-            if (stdout)
-                console.log(colors.green(stdout));
-            if (stderr) {
-                console.log(colors.red(stderr));
-            if (err)
-                console.log(colors.red(err));
-            }
+    try {
+        data = require('./src/data/generate.js')();
+        exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
+        if (!fs.existsSync(data.config.quicktype.distributionPath)) {
+            fs.mkdirSync(data.config.quicktype.distributionPath);
+        }
+        data.config.quicktype.modelServicePaths.forEach(path => {
+            console.log("Item" + path.url, path.fileName);
+            exec(`quicktype ${data.config.quicktype.rootUrl}${path.url} -l csharp -o ${data.config.quicktype.distributionPath}${path.fileName}.cs`, function (err, stdout, stderr) {
+                if (stdout)
+                    console.log('[QUICKTYPE] ' + colors.green(stdout));
+                if (stderr) {
+                    console.log('[QUICKTYPE] ' + colors.red(stderr));
+                    if (err)
+                        console.log('[QUICKTYPE] ' + colors.red(err));
+                }
+            });
         });
-    });
-    if (cb)
-        cb();
+    } catch (err) {
+        console.log(colors.red(err));
+        if(cb) cb();
+    }
+    if (cb) cb();
 }
 
 const json = (callback) => {
-    console.log(colors.cyan('Generating a new DB'));
+    console.log(colors.cyan('[JSON] Generating a new DB'));
 
     delete require.cache[require.resolve('./src/data/generate.js')];
 
     try {
-        var jsonData = require('./src/data/generate.js');
+        var jsonData = require('./src/data/generate.js')
         fs.writeFile("./src/data/db.json", JSON.stringify(jsonData()), 'utf8', (err) => {
-            if (err)
-                console.log(err);
-            else
-                console.log(colors.green('DB.json Saved'.bold));
+            if (err) {
+                console.log('[JSON] ' + colors.red(err));
+                if (callback)
+                    callback()
+            } else
+                console.log(colors.green('[JSON] DB.json Saved'.bold));
 
             if (callback)
                 callback();
         });
     } catch (err) {
-        console.log(colors.red(err.toString()));
+        console.log('[JSON] ' + colors.red(err.toString()));
         if (callback)
             callback();
     }
 };
 
 const html = (callback) => {
-    console.log(colors.cyan('transpiling PUG'));
+    console.log(colors.cyan('[HTML] Transpiling PUG'));
+    console.log(colors.bold('[HTML] Injecting db.json into pug hyperspace'));
+
+    const json = JSON.parse(fs.readFileSync('./src/data/db.json'));
     return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
-        .pipe(data(function (file) {
-            console.log(colors.bold('injecting db.json into pug hyperspace'));
-            return JSON.parse(fs.readFileSync('./src/data/db.json'));
-        }))
-        .pipe(pug({
-            pretty: true,
-            debug: false,
-            compileDebug: false
-        }).on('error', function (err) {
-            console.log(colors.red(err.message));
-            console.log(colors.grey(err.stack));
-            callback();
-        }))
-        .pipe(replace(entities.decode("&#65279;"), ''))
+        .pipe(
+            pug({
+                pretty: true,
+                debug: false,
+                compileDebug: false,
+                data: json
+            }).on('error', function (err) {
+                console.log('[HTML] ' + colors.bgWhite.red(err.toString()));
+                console.log('[HTML] ' + colors.red(err.message));
+                callback();
+            })
+        )
+        //.pipe(replace(entities.decode("&#65279;"), ''))
         .pipe(gulp.dest(templateDistributionLocation + '/'))
         .pipe(gulp.dest(webDistributionLocation + '/'))
         .on('end', function () {
-            console.log(colors.green('transpilation complete'));
+            console.log(colors.green('[HTML] Transpilation complete'));
             callback();
         });
 };
 const img = (callback) => {
-    console.log(colors.cyan('Copying Images'));
+    console.log(colors.cyan('[IMAGE] Copying Images'));
     return gulp.src('./src/img/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/img'))
         .pipe(gulp.dest(webDistributionLocation + '/img'))
         .on('error', function (err) {
-            console.log(colors.red(err.toString()));
+            console.log('[IMAGE] ' + colors.red(err.toString()));
             callback();
         }).on('end', function () {
             callback();
         });
 };
 const font = () => {
-    console.log(colors.cyan('Copying Fonts'));
+    console.log('[FONT] ' + colors.cyan('Copying Fonts'));
     return gulp.src('./src/fonts/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
 };
 const js = (callback) => {
-    console.log(colors.cyan('Bundling and Babeling JS'));
+    console.log(colors.cyan('[JS] Bundling and Babeling JS'));
     var b = browserify({
             entries: './src/js/app.js',
             debug: true
@@ -149,7 +158,7 @@ const js = (callback) => {
     return b
         .bundle((err) => {
             if (err)
-                console.log(colors.red(err.toString()));
+                console.log('[JS] ' + colors.red(err.toString()));
 
             if (callback)
                 callback();
@@ -161,7 +170,7 @@ const js = (callback) => {
         }))
         .pipe(uglify())
         .on('error', function (err) {
-            console.log(colors.red(err.toString()));
+            console.log('[JS] ' + colors.red(err.toString()));
             callback();
         })
         .pipe(sourcemaps.write('./'))
@@ -172,7 +181,7 @@ const js = (callback) => {
         });
 };
 const jsv = (callback) => {
-    console.log(colors.cyan('Bundling and Babeling Vendor JS'));
+    console.log(colors.cyan('[JS V] Bundling and Babeling Vendor JS'));
     var b = browserify({
         debug: true
     }).transform('babelify', {
@@ -186,7 +195,7 @@ const jsv = (callback) => {
     return b
         .bundle((err) => {
             if (err)
-                console.log(colors.red(err.toString()));
+                console.log('[JS V] ' + colors.red(err.toString()));
 
             if (callback)
                 callback();
@@ -198,7 +207,7 @@ const jsv = (callback) => {
         }))
         .pipe(uglify())
         .on('error', function (err) {
-            console.log(colors.red(err.toString()));
+            console.log('[JS V] ' + colors.red(err.toString()));
             callback();
         })
         .pipe(sourcemaps.write('./'))
@@ -206,7 +215,7 @@ const jsv = (callback) => {
         .pipe(gulp.dest(webDistributionLocation + '/js'));
 };
 const scss = (callback) => {
-    console.log(colors.cyan('Transpiling Sass to Css'));
+    console.log(colors.cyan('[SCSS] Transpiling Sass to Css'));
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
 
@@ -219,15 +228,18 @@ const scss = (callback) => {
             .pipe(sourcemaps.init())
             .pipe(sass().on('error', sass.logError))
             .pipe(concat(dest))
-            .pipe(minify())
             .pipe(postcss([autoprefixer()]))
+            .pipe(cleanCSS({
+                compatibility: 'ie8'
+            }))
             .pipe(sourcemaps.write('.'))
             .on('error', function (err) {
-                console.log(colors.red(err.toString()));
+                console.log(colors.red('[SCSS] ' + err.toString()));
                 callback();
             })
             .pipe(gulp.dest(templateDistributionLocation + '/css'))
             .pipe(gulp.dest(webDistributionLocation + '/css'))
+            .pipe(browserSync.stream())
             .on('end', function () {
                 callback();
             });
@@ -235,28 +247,26 @@ const scss = (callback) => {
     }
 };
 const serve = (callback) => {
-    console.log(colors.cyan('Standing up your server'));
+    console.log(colors.cyan('[SERVE] Says: standing up your server'));
     build_routes();
     browserSync.init({
+        open: false,
         notify: true,
         logPrefix: 'Server Says:',
-        port: config.browser_sync.port,
         server: {
             baseDir: "./dist/",
             index: "index.html"
-        },
-        ui: {
-            port: config.browser_sync.ui
         },
         middleware: [function (req, res, next) {
             router(req, res, next)
         }]
     }, function (err, bs) {
+        console.log(colors.cyan('[SERVE] Says: hello'));
         callback();
     });
 };
-const build_routes = () => {
-    console.log(colors.cyan('Rebuilding routes'));
+const build_routes = (cb) => {
+    console.log(colors.cyan('[ROUTE] Rebuilding routes'));
     router = express.Router();
     server = jsonServer.create({
         verbosity: {
@@ -270,10 +280,10 @@ const build_routes = () => {
     router.use('/test', (req, res, next) => {
         res.render("Oh No")
     })
-    //router.use(express.static('./dist'));
+    if(cb) cb();
 };
 const watch = (callback) => {
-    console.log(colors.cyan('Watching...'));
+    console.log(colors.cyan('[WATCH] Watching...'));
     gulp.watch(['./src/markup/**/*.pug']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
         html(reload);
@@ -281,7 +291,9 @@ const watch = (callback) => {
 
     gulp.watch(['./src/styles/**/*.scss']).on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        scss(reload);
+        scss(() => {
+            //browserSync.stream();
+        });
     });
 
     gulp.watch(['./src/js/**/*.js']).on('all', function (event, path, stats) {
@@ -291,11 +303,7 @@ const watch = (callback) => {
 
     gulp.watch(['./src/data/generate.js']).on('change', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
-        json(() => {
-            build_routes();
-            createModels();
-            reload();
-        });
+        json(build_routes(createModels(reload)));
     });
 
     gulp.watch(['./src/img/**/*']).on('add', function (event, path, stats) {
@@ -306,8 +314,5 @@ const watch = (callback) => {
     callback();
 };
 
-gulp.task('models', gulp.series(json))
-gulp.task('serve', gulp.series(json, serve, watch));
-gulp.task('watch', gulp.series(watch));
-gulp.task('vendor', gulp.series(jsv));
-gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, img, font), gulp.parallel(serve, watch, createModels)));
+gulp.task('models', gulp.series(json, serve, createModels))
+gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), gulp.parallel(serve, watch, createModels)));

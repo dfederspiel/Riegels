@@ -11,7 +11,38 @@
 }
 
 body {
-    transition: all 5s;
+    transition: all .5s;
+    font-size: 16px;
+}
+
+.section {
+    margin-top: 40px;
+    margin-bottom: 80px;
+    h1 {
+        margin-bottom: 25px;
+    }
+}
+
+.js-back-to-top {
+    opacity: 0;
+    right: 0;
+    transition: all .5s;
+    &.visible {
+        opacity: 1;
+    }
+    z-index: 100;
+    position: fixed;
+    right: 10px;
+    top: calc(100vh - 100px);
+    .button {
+        padding: 25px 10px;
+        font-weight: bold;
+        background-color: rgba($peru, .85);
+        border: solid 2px $saddle-brown;
+        border-radius: 5px;
+        box-shadow: 5px 5px 10px rgba($saddle-brown, .25);
+        cursor: pointer;
+    }
 }
 
 h1 { color: $saddle-brown; }

@@ -1,2 +1,2 @@
-# Riegels
-Riegels Cigars
+# Global Packages
+npm-check-updates
