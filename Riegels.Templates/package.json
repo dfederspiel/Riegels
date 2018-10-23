@@ -22,6 +22,7 @@
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-concat": "^2.6.1",
+    "gulp-debounce": "^1.0.2",
     "gulp-json-srv": "^1.2.0",
     "gulp-minify-css": "^1.2.4",
     "gulp-postcss": "^8.0.0",

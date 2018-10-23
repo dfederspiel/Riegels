@@ -1,6 +1,5 @@
 // https://lodash.com/
 // https://github.com/Marak/faker.js
-
 const between = (min = 0, max = 1) => {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -9,26 +8,10 @@ const between = (min = 0, max = 1) => {
 
 module.exports = function () {
     var faker = require('faker');
-    var moment = require('moment');
     var _ = require('lodash');
     return {
-        config: {
-            // Config for quicktype c# generators
-            quicktype: {
-                distributionPath: './dist/csharp/',
-                rootUrl: 'http://localhost:3000',
-                modelServicePaths: [{
-                    fileName: "Article",
-                    url: "/api/articles"
-                },
-                {
-                    fileName: "HeroVideo",
-                    url: "/api/heroVideos"
-                }]
-            }
-        },
         // build random algorithm to find permutations of various properties
-        heroVideos: _.times(5, function (n) {
+        heroVideos: _.times(15, function (n) {
             return {
                 id: n,
                 heading: "Test",
