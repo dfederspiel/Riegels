@@ -15,8 +15,6 @@ const gulp = require('gulp'),
     exec = require("child_process").exec,
     cleanCSS = require('gulp-clean-css');
 
-let debounceDelay = 500;
-
 const log = (o, level = 0) => {
     if (level > 2)
         return;
@@ -255,10 +253,48 @@ const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
 
-    gulp.watch(['./src/markup/**/*.pug'], { delay: debounceDelay }, function Transpiling_Pug(done){
-        bs.notify("Recompiling HTML", 1000);
-        html(done);
-    })
+    // TODO create filter on callbacks from watch tasks, queueing tasks globally to prevent over-firing
+    let debounceDelay = 1000;
+    let items = [];
+    let queuePaused = false;
+    
+    const queue = (name, cb, exit) => {
+        console.log(name);
+        if(items.filter(i => i.name == name).length > 0)
+            exit();
+        else {
+            items.push({ name: name, cb: cb })
+        }
+        exit();
+    }
+    const flush = () => {
+        items.forEach((val, idx) => {
+            console.log(`Running ${val.name} Task`)
+            val.cb(val);
+        })
+        items = [];
+    }
+
+    setInterval(() => {
+        console.log(`Processing ${items.length} Item(s)`);
+        flush();
+    }, debounceDelay);
+
+    gulp.watch(['./src/markup/**/*.pug'], { delay: 0 }, function Queue_Item(done){
+        queue('Pug', (response) => {
+            console.log(response.name);
+            bs.notify("Transpiling HTML", 1000);
+            html(() => {
+                bs.notify("Done Transpiling HTML", 1000);
+                done();
+            });
+        }, done)
+    });
+
+    // gulp.watch(['./src/markup/**/*.pug'], { delay: debounceDelay }, function Transpiling_Pug(done){
+    //     bs.notify("Recompiling HTML", 1000);
+    //     html(done);
+    // })
 
     gulp.watch(['./src/styles/**/*.scss'], { delay: debounceDelay }, function Transpiling_Sass(done){
         bs.notify("Recompiling SASS", 1000);
@@ -284,7 +320,7 @@ const watch = (done) => {
     })
 
     gulp.watch(['./src/img/**/*'], { delay: 5000 }, function Transfer_Images(done){
-        bs.notify("Transferring Images", 1000);
+        bs.notify("Transferring Images", debounceDelay);
         img(()=>{
             reload();
             done();
@@ -293,17 +329,16 @@ const watch = (done) => {
 
     gulp.watch('../.git/HEAD', { name: 'Branch Watcher', delay: 0 }, function(){
         console.log('*************HEAD CHANGED**************')
-        debounceDelay = 5000;
+        console.log('queue_delay')
+        queuePaused = true
         setTimeout(() => {
-            debounceDelay = 500;
-        })
+            console.log('release queue');
+            queuePaused = false;
+        }, 10000)
+        done();
     })
 
-    gulp.watch('./src/**/*', { delay: debounceDelay }, (done, a, b) => {
-        console.log(this);
-        console.log(a)
-        console.log(b);
-        console.log(done);
+    gulp.watch('./src/**/*', { delay: debounceDelay }, function File_Activity(done) {
         done();
     })
     .on('all', function (event, path, stats) {
@@ -313,5 +348,6 @@ const watch = (done) => {
     done();
 };
 
+gulp.task('watch', watch);
 gulp.task('build', gulp.series(gulp.parallel(html, scss, js, jsv, img, font)))
 gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), gulp.parallel(serve, watch)));
