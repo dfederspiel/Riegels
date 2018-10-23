@@ -29,27 +29,6 @@ namespace QuickType
 
         [JsonProperty("body")]
         public string Body { get; set; }
-
-        [JsonProperty("author")]
-        public Author Author { get; set; }
-    }
-
-    public partial class Author
-    {
-        [JsonProperty("id")]
-        public long Id { get; set; }
-
-        [JsonProperty("firstName")]
-        public string FirstName { get; set; }
-
-        [JsonProperty("lastName")]
-        public string LastName { get; set; }
-
-        [JsonProperty("bio")]
-        public string Bio { get; set; }
-
-        [JsonProperty("website")]
-        public Uri Website { get; set; }
     }
 
     public partial class Article

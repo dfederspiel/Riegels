@@ -1,51 +1,63 @@
-include  grids/grid
-include  grids/gridf
-include  grids/col
-include  grids/row
+include grids/grid
+include grids/gridf
+include grids/col
+include grids/row
 
-include  content/article
-include  content/author
-include  content/unsplash-cred
-
+include content/article
+include content/author
+include content/unsplash-cred
+include content/contact
+include content/events
 
 include mixins/ipsum
 include mixins/style-guide
-include mixins/events
 
 include mixins/sitefinity/sf-library-selector
 
 doctype html
 html(lang="en")
 	head
-		title Base Template
+		title Riegels
 		link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", 
 			rel="stylesheet", 
 			integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", 
 			crossorigin="anonymous")    
 		link(href="/css/bundle.min.css", 
 			rel="stylesheet")
+		link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.4.1/css/all.css', integrity='sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz', crossorigin='anonymous')
 		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 	body.standard
+		.js-back-to-top
+			.button Back To Top
 		header
 			block header
-				+grid
-					+row
-						+col("col-md-12")
-							div.content(style='margin: 50px; text-align: center').
-								Riegel's Pipe &amp; Tobacco
-							.menu
-								a(href="#about") About
-								a(href="#events") Events
-		+unsplash-cred('/img/bg-brick.jpg', 'lindsaymergy')
+				.image
+					.overlay
+						+grid
+							+row
+								+col("col-md-12")
+									.content(style='margin: 50px; text-align: center') Riegel's Pipe &amp; Tobacco
+										.menu
+											.item
+												a.js-anchor(href="#about") About
+											.item
+												a.js-anchor(href="#history") History
+											.item
+												a.js-anchor(href="#events") Events
 		main
 			block main
+				h1 test
+				h2 test
+				h2 test
+				h1 test
+				h2 test
 
 		footer
 			block footer
 				+grid
 					+row
 						+col("col-md-12")
-							div.content(style='margin: 50px; text-align: center').
-								Contact Information
+							div.content(style='margin: 50px; text-align: center')
+								+contact
 		script(src='/js/vendors.min.js')
 		script(src='/js/app.min.js')

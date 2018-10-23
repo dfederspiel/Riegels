@@ -36,12 +36,6 @@
                         "type": "string"
                     }
                 },
-                "lipsum": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "events": {
                     "$ref": "#/definitions/Events"
                 }
@@ -52,7 +46,6 @@
                 "events",
                 "heroVideos",
                 "ipsum",
-                "lipsum",
                 "sitefinitySelectors"
             ],
             "title": "Schema"
@@ -125,10 +118,17 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "kind": {
+                "accessRole": {
                     "type": "string"
                 },
+                "defaultReminders": {
+                    "type": "array",
+                    "items": {}
+                },
                 "description": {
+                    "type": "string"
+                },
+                "etag": {
                     "type": "string"
                 },
                 "items": {
@@ -137,32 +137,34 @@
                         "$ref": "#/definitions/Item"
                     }
                 },
-                "updated": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "summary": {
+                "kind": {
                     "type": "string"
                 },
-                "etag": {
-                    "type": "string"
+                "nextPageToken": {
+                    "type": "null"
                 },
                 "nextSyncToken": {
+                    "type": "null"
+                },
+                "summary": {
                     "type": "string"
                 },
                 "timeZone": {
                     "type": "string"
                 },
-                "accessRole": {
-                    "type": "string"
+                "updated": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             },
             "required": [
                 "accessRole",
+                "defaultReminders",
                 "description",
                 "etag",
                 "items",
                 "kind",
+                "nextPageToken",
                 "nextSyncToken",
                 "summary",
                 "timeZone",
@@ -174,27 +176,59 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "status": {
-                    "type": "string"
+                "anyoneCanAddSelf": {
+                    "type": "null"
                 },
-                "kind": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Attachment"
+                    }
+                },
+                "attendees": {
+                    "type": "null"
+                },
+                "attendeesOmitted": {
+                    "type": "null"
+                },
+                "colorId": {
+                    "type": "null"
+                },
+                "conferenceData": {
+                    "type": "null"
+                },
+                "creator": {
+                    "$ref": "#/definitions/Creator"
+                },
+                "description": {
                     "type": "string"
                 },
                 "end": {
                     "$ref": "#/definitions/End"
                 },
-                "created": {
-                    "type": "string",
-                    "format": "date-time"
+                "endTimeUnspecified": {
+                    "type": "null"
                 },
-                "iCalUID": {
+                "etag": {
                     "type": "string"
-                },
-                "reminders": {
-                    "$ref": "#/definitions/Reminders"
                 },
                 "extendedProperties": {
                     "$ref": "#/definitions/ExtendedProperties"
+                },
+                "gadget": {
+                    "type": "null"
+                },
+                "guestsCanInviteOthers": {
+                    "type": "null"
+                },
+                "guestsCanModify": {
+                    "type": "null"
+                },
+                "guestsCanSeeOtherGuests": {
+                    "type": "null"
+                },
+                "hangoutLink": {
+                    "type": "null"
                 },
                 "htmlLink": {
                     "type": "string",
@@ -204,51 +238,143 @@
                         "https"
                     ]
                 },
+                "iCalUID": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "locked": {
+                    "type": "null"
+                },
+                "organizer": {
+                    "$ref": "#/definitions/Creator"
+                },
+                "originalStartTime": {
+                    "type": "null"
+                },
+                "privateCopy": {
+                    "type": "null"
+                },
+                "recurrence": {
+                    "type": "null"
+                },
+                "recurringEventId": {
+                    "type": "null"
+                },
+                "reminders": {
+                    "$ref": "#/definitions/Reminders"
+                },
                 "sequence": {
                     "type": "integer"
                 },
-                "updated": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "summary": {
-                    "type": "string"
+                "source": {
+                    "type": "null"
                 },
                 "start": {
                     "$ref": "#/definitions/End"
                 },
-                "etag": {
+                "status": {
                     "type": "string"
                 },
-                "organizer": {
-                    "$ref": "#/definitions/Organizer"
-                },
-                "creator": {
-                    "$ref": "#/definitions/Creator"
-                },
-                "id": {
+                "summary": {
                     "type": "string"
+                },
+                "transparency": {
+                    "type": "null"
+                },
+                "visibility": {
+                    "type": "null"
                 }
             },
             "required": [
-                "created",
+                "anyoneCanAddSelf",
+                "attachments",
+                "attendees",
+                "attendeesOmitted",
+                "colorId",
+                "conferenceData",
                 "creator",
+                "description",
                 "end",
+                "endTimeUnspecified",
                 "etag",
                 "extendedProperties",
+                "gadget",
+                "guestsCanInviteOthers",
+                "guestsCanModify",
+                "guestsCanSeeOtherGuests",
+                "hangoutLink",
                 "htmlLink",
                 "iCalUID",
                 "id",
                 "kind",
+                "location",
+                "locked",
                 "organizer",
+                "originalStartTime",
+                "privateCopy",
+                "recurrence",
+                "recurringEventId",
                 "reminders",
                 "sequence",
+                "source",
                 "start",
                 "status",
                 "summary",
-                "updated"
+                "transparency",
+                "visibility"
             ],
             "title": "Item"
+        },
+        "Attachment": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "fileId": {
+                    "type": "string"
+                },
+                "fileUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http",
+                        "https"
+                    ]
+                },
+                "iconLink": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http",
+                        "https"
+                    ]
+                },
+                "mimeType": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "ETag": {
+                    "type": "null"
+                }
+            },
+            "required": [
+                "ETag",
+                "fileId",
+                "fileUrl",
+                "iconLink",
+                "mimeType",
+                "title"
+            ],
+            "title": "Attachment"
         },
         "Creator": {
             "type": "object",
@@ -259,11 +385,26 @@
                 },
                 "email": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "null"
+                },
+                "self": {
+                    "anyOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 }
             },
             "required": [
                 "displayName",
-                "email"
+                "email",
+                "id",
+                "self"
             ],
             "title": "Creator"
         },
@@ -271,13 +412,20 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "dateTime": {
-                    "type": "string",
-                    "format": "date-time"
+                "date": {
+                    "type": "null"
+                },
+                "timeZone": {
+                    "type": "null"
+                },
+                "ETag": {
+                    "type": "null"
                 }
             },
             "required": [
-                "dateTime"
+                "ETag",
+                "date",
+                "timeZone"
             ],
             "title": "End"
         },
@@ -287,10 +435,14 @@
             "properties": {
                 "private": {
                     "$ref": "#/definitions/Private"
+                },
+                "shared": {
+                    "type": "null"
                 }
             },
             "required": [
-                "private"
+                "private",
+                "shared"
             ],
             "title": "ExtendedProperties"
         },
@@ -308,36 +460,19 @@
             ],
             "title": "Private"
         },
-        "Organizer": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "self": {
-                    "type": "boolean"
-                },
-                "displayName": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "displayName",
-                "email",
-                "self"
-            ],
-            "title": "Organizer"
-        },
         "Reminders": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "overrides": {
+                    "type": "null"
+                },
                 "useDefault": {
                     "type": "boolean"
                 }
             },
             "required": [
+                "overrides",
                 "useDefault"
             ],
             "title": "Reminders"

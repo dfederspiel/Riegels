@@ -288,9 +288,11 @@ __pycache__/
 *.xsd.cs
 
 dist/
-Riegels.Templates/src/data/db.json
-Riegels/js/app.min.js
-Riegels/base.html
-Riegels/index.html
 Riegels/css/bundle.min.css
 Riegels/css/bundle.min.css.map
+Riegels/**/*.html
+Riegels/js/app.min.js
+Riegels/js/app.min.js.map
+Riegels.Templates/src/data/db.json
+Riegels/js/vendors.min.js
+Riegels/js/vendors.min.js.map
