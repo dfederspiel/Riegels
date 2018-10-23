@@ -253,17 +253,17 @@ const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
 
-    gulp.watch(['./src/markup/**/*.pug'], function Transpiling_Pug(done){
+    gulp.watch(['./src/markup/**/*.pug'], { delay: 5000 }, function Transpiling_Pug(done){
         bs.notify("Recompiling HTML", 1000);
         html(done);
     })
 
-    gulp.watch(['./src/styles/**/*.scss'], function Transpiling_Sass(done){
+    gulp.watch(['./src/styles/**/*.scss'], { delay: 5000 }, function Transpiling_Sass(done){
         bs.notify("Recompiling SASS", 1000);
         scss(done);
     })
 
-    gulp.watch(['./src/js/**/*.js'], function JavaScript_Bundler(done){
+    gulp.watch(['./src/js/**/*.js'], { delay: 5000 }, function JavaScript_Bundler(done){
         bs.notify("Recompiling JavaScript", 1000);
         js(()=>{
             reload();
@@ -271,7 +271,7 @@ const watch = (done) => {
         });
     })
 
-    gulp.watch(['./src/data/generate.js'], function Data_Generator (done) {
+    gulp.watch(['./src/data/generate.js'], { delay: 5000 }, function Data_Generator (done) {
         bs.notify("Regenerating Data", 1000);
         json(() =>{
             build_routes(() => {
@@ -281,7 +281,7 @@ const watch = (done) => {
         });
     })
 
-    gulp.watch(['./src/img/**/*'], function Transfer_Images(done){
+    gulp.watch(['./src/img/**/*'], { delay: 5000 }, function Transfer_Images(done){
         bs.notify("Transferring Images", 1000);
         img(()=>{
             reload();
@@ -289,7 +289,7 @@ const watch = (done) => {
         });
     });
 
-    gulp.watch('./src/**/*')
+    gulp.watch('./src/**/*', { delay: 5000 })
     .on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
     });
