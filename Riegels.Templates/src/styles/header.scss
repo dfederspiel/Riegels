@@ -1,17 +1,12 @@
 header {
-    
     .image {
         background-image: url(/img/bg-smoke.jpg);
         background-size: cover;
-
         .overlay {
-            background-color: rgba($saddle-brown, .65);
-
-
+            background-color: rgba($saddle-brown, .45);
             .content {
                 color: $rosy-brown-light;
                 font-size: 6rem;
-
                 .menu {
                     display: flex;
                     flex-wrap: wrap;
@@ -21,7 +16,6 @@ header {
                     .item {
                         flex: 1 1 33%;
                         a {
-                            
                             color: $rosy-brown-light;
                             font-size: 25px;
                             padding: 20px;

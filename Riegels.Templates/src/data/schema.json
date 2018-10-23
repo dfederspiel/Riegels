@@ -6,9 +6,6 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "config": {
-                    "$ref": "#/definitions/Config"
-                },
                 "heroVideos": {
                     "type": "array",
                     "items": {
@@ -46,7 +43,6 @@
             "required": [
                 "articles",
                 "authors",
-                "config",
                 "events",
                 "heroVideos",
                 "ipsum",
@@ -117,65 +113,6 @@
                 "website"
             ],
             "title": "Author"
-        },
-        "Config": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "quicktype": {
-                    "$ref": "#/definitions/Quicktype"
-                }
-            },
-            "required": [
-                "quicktype"
-            ],
-            "title": "Config"
-        },
-        "Quicktype": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "distributionPath": {
-                    "type": "string"
-                },
-                "rootUrl": {
-                    "type": "string",
-                    "format": "uri",
-                    "qt-uri-protocols": [
-                        "http",
-                        "https"
-                    ]
-                },
-                "modelServicePaths": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ModelServicePath"
-                    }
-                }
-            },
-            "required": [
-                "distributionPath",
-                "modelServicePaths",
-                "rootUrl"
-            ],
-            "title": "Quicktype"
-        },
-        "ModelServicePath": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "fileName": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "fileName",
-                "url"
-            ],
-            "title": "ModelServicePath"
         },
         "Events": {
             "type": "object",
