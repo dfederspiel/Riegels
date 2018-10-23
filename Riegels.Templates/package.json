@@ -12,6 +12,7 @@
     "@babel/register": "^7.0.0",
     "autoprefixer": "^9.2.1",
     "babelify": "^10.0.0",
+    "browser-sync": "^2.26.3",
     "browserify": "^16.2.3",
     "child_process": "^1.0.2",
     "colors": "^1.3.2",
@@ -22,6 +23,7 @@
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-concat": "^2.6.1",
+    "gulp-git-watch": "^0.1.0",
     "gulp-json-srv": "^1.2.0",
     "gulp-postcss": "^8.0.0",
     "gulp-pug": "^4.0.1",
@@ -34,8 +36,7 @@
     "quicktype": "^15.0.142",
     "underscore": "^1.9.1",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0",
-    "browser-sync": "^2.26.3"
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",

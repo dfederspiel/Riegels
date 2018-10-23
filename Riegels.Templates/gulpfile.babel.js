@@ -13,6 +13,7 @@ const gulp = require('gulp'),
     bs = require('browser-sync').create(),
     reload = bs.reload,
     exec = require("child_process").exec,
+    gitWatch = require('gulp-git-watch')
     cleanCSS = require('gulp-clean-css');
 
 const log = (o, level = 0) => {
@@ -321,6 +322,14 @@ const watch = (callback) => {
     .on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
     });
+
+    gitWatch()
+		.on('check', function() {
+			console.log('CHECK!');
+		})
+		.on('change', function(newHash, oldHash) {
+			console.log('CHANGES! FROM', oldHash, '->', newHash);
+		});
 
     callback();
 };
