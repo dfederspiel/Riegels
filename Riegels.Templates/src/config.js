@@ -1,6 +1,5 @@
 module.exports = function () {
     return {
-        vendors: ['jquery', 'popper.js', 'bootstrap', 'moment', 'handlebars', 'scrollreveal'],
         browser_sync: {
             port: 8000,
             ui: 8080

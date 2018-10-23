@@ -10,13 +10,10 @@ const gulp = require('gulp'),
     buffer = require('vinyl-buffer'),
     uglify = require('gulp-uglify'),
     express = require('express'),
-    debounce   = require('gulp-debounce'),
     bs = require('browser-sync').create(),
     reload = bs.reload,
     exec = require("child_process").exec,
     cleanCSS = require('gulp-clean-css');
-
-const config = require('./src/config')();
 
 const log = (o, level = 0) => {
     if (level > 2)
@@ -42,6 +39,9 @@ const templateDistributionLocation = "./dist";
 const webDistributionLocation = "../Riegels";
 
 var jsonData = require('./src/data/generate.js');
+
+var packageJSON = require('./package.json');
+var dependencies = Object.keys(packageJSON && packageJSON.dependencies || {});
 
 // const createModels = (cb) => {
 //     console.log(colors.cyan('[QUICKTYPE] Generating C# Models'.big));
@@ -146,7 +146,7 @@ const js = (callback) => {
             entries: './src/js/app.js',
             debug: true
         })
-        .external(config.vendors)
+        .external(dependencies)
         .transform('babelify', {
             presets: ['@babel/preset-env']
         });
@@ -184,7 +184,7 @@ const jsv = (callback) => {
         presets: ['@babel/preset-env']
     });
 
-    config.vendors.forEach(lib => {
+    dependencies.forEach(lib => {
         b.require(lib);
     });
 
