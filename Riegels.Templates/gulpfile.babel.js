@@ -15,6 +15,8 @@ const gulp = require('gulp'),
     exec = require("child_process").exec,
     cleanCSS = require('gulp-clean-css');
 
+let debounceDelay = 500;
+
 const log = (o, level = 0) => {
     if (level > 2)
         return;
@@ -253,17 +255,17 @@ const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
 
-    gulp.watch(['./src/markup/**/*.pug'], { delay: 5000 }, function Transpiling_Pug(done){
+    gulp.watch(['./src/markup/**/*.pug'], { delay: debounceDelay }, function Transpiling_Pug(done){
         bs.notify("Recompiling HTML", 1000);
         html(done);
     })
 
-    gulp.watch(['./src/styles/**/*.scss'], { delay: 5000 }, function Transpiling_Sass(done){
+    gulp.watch(['./src/styles/**/*.scss'], { delay: debounceDelay }, function Transpiling_Sass(done){
         bs.notify("Recompiling SASS", 1000);
         scss(done);
     })
 
-    gulp.watch(['./src/js/**/*.js'], { delay: 5000 }, function JavaScript_Bundler(done){
+    gulp.watch(['./src/js/**/*.js'], { delay: debounceDelay }, function JavaScript_Bundler(done){
         bs.notify("Recompiling JavaScript", 1000);
         js(()=>{
             reload();
@@ -271,7 +273,7 @@ const watch = (done) => {
         });
     })
 
-    gulp.watch(['./src/data/generate.js'], { delay: 5000 }, function Data_Generator (done) {
+    gulp.watch(['./src/data/generate.js'], { delay: debounceDelay }, function Data_Generator (done) {
         bs.notify("Regenerating Data", 1000);
         json(() =>{
             build_routes(() => {
@@ -289,7 +291,21 @@ const watch = (done) => {
         });
     });
 
-    gulp.watch('./src/**/*', { delay: 5000 })
+    gulp.watch('../.git/HEAD', { name: 'Branch Watcher', delay: 0 }, function(){
+        console.log('*************HEAD CHANGED**************')
+        debounceDelay = 5000;
+        setTimeout(() => {
+            debounceDelay = 500;
+        })
+    })
+
+    gulp.watch('./src/**/*', { delay: debounceDelay }, (done, a, b) => {
+        console.log(this);
+        console.log(a)
+        console.log(b);
+        console.log(done);
+        done();
+    })
     .on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
     });
