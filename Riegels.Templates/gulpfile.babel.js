@@ -13,7 +13,6 @@ const gulp = require('gulp'),
     bs = require('browser-sync').create(),
     reload = bs.reload,
     exec = require("child_process").exec,
-    gitWatch = require('gulp-git-watch')
     cleanCSS = require('gulp-clean-css');
 
 const log = (o, level = 0) => {
@@ -44,33 +43,6 @@ var jsonData = require('./src/data/generate.js');
 var packageJSON = require('./package.json');
 var dependencies = Object.keys(packageJSON && packageJSON.dependencies || {});
 
-// const createModels = (cb) => {
-//     console.log(colors.cyan('[QUICKTYPE] Generating C# Models'.big));
-
-//     try {
-//         exec('quicktype ./src/data/db.json -l schema -o ./src/data/schema.json')
-//         if (!fs.existsSync(config.quicktype.distributionPath)) {
-//             fs.mkdirSync(config.quicktype.distributionPath);
-//         }
-//         config.quicktype.modelServicePaths.forEach(path => {
-//             console.log("Item" + path.url, path.fileName);
-//             exec(`quicktype ${config.quicktype.rootUrl}${path.url} -l csharp -o ${config.quicktype.distributionPath}${path.fileName}.cs`, function (err, stdout, stderr) {
-//                 if (stdout)
-//                     console.log('[QUICKTYPE] ' + colors.green(stdout));
-//                 if (stderr) {
-//                     console.log('[QUICKTYPE] ' + colors.red(stderr));
-//                     if (err)
-//                         console.log('[QUICKTYPE] ' + colors.red(err));
-//                 }
-//             });
-//         });
-//     } catch (err) {
-//         console.log(colors.red(err));
-//         if(cb) cb();
-//     }
-//     if (cb) cb();
-// }
-
 const json = (callback) => {
     console.log(colors.cyan('[JSON] Generating a new DB'));
 
@@ -97,9 +69,6 @@ const json = (callback) => {
 
 const html = (callback) => {
     console.log(colors.cyan('[HTML] Transpiling PUG'));
-    //console.log(colors.bold('[HTML] Injecting db.json into pug hyperspace'));
-
-    //const json = JSON.parse(fs.readFileSync('./src/data/db.json'));
     return gulp.src(['./src/markup/**/*.pug', '!src/markup/content/**/*.pug', '!src/markup/grids/**/*.pug', '!src/markup/mixins/**/*.pug'])
         .pipe(
             pug({
@@ -117,12 +86,11 @@ const html = (callback) => {
                 callback();
             })
         )
-        
-        //.pipe(replace(entities.decode("&#65279;"), ''))
         .pipe(gulp.dest(templateDistributionLocation + '/'))
         .pipe(gulp.dest(webDistributionLocation + '/'))
         .pipe(bs.stream({once: true}));
 };
+
 const img = (callback) => {
     console.log(colors.cyan('[IMAGE] Copying Images'));
     return gulp.src('./src/img/**/*.*')
@@ -135,12 +103,14 @@ const img = (callback) => {
             callback();
         });
 };
+
 const font = () => {
     console.log('[FONT] ' + colors.cyan('Copying Fonts'));
     return gulp.src('./src/fonts/**/*.*')
         .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
         .pipe(gulp.dest(webDistributionLocation + '/fonts'));
 };
+
 const js = (callback) => {
     console.log(colors.cyan('[JS] Bundling and Babeling JS'));
     var b = browserify({
@@ -177,6 +147,7 @@ const js = (callback) => {
             callback();
         });
 };
+
 const jsv = (callback) => {
     console.log(colors.cyan('[JS V] Bundling and Babeling Vendor JS'));
     var b = browserify({
@@ -211,6 +182,7 @@ const jsv = (callback) => {
         .pipe(gulp.dest(templateDistributionLocation + '/js'))
         .pipe(gulp.dest(webDistributionLocation + '/js'));
 };
+
 const scss = (callback) => {
     console.log(colors.cyan('[SCSS] Transpiling Sass to Css'));
     var postcss = require('gulp-postcss');
@@ -241,6 +213,7 @@ const scss = (callback) => {
 
     }
 };
+
 const serve = (callback) => {
     console.log(colors.cyan('[SERVE] Says: standing up your server'));
     build_routes();
@@ -260,6 +233,7 @@ const serve = (callback) => {
         callback();
     });
 };
+
 const build_routes = (cb) => {
     console.log(colors.cyan('[ROUTE] Rebuilding routes'));
     router = express.Router();
@@ -272,12 +246,10 @@ const build_routes = (cb) => {
     server.use(jsonServer.defaults());
     server.use(jsonServer.router(jsonData()));
     router.use('/api', server)
-    // router.use('/test', (req, res, next) => {
-    //     res.render("Oh No")
-    // })
     if(cb) cb();
 };
-const watch = (callback) => {
+
+const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
 
@@ -299,7 +271,6 @@ const watch = (callback) => {
         });
     })
 
-    //var isrunning = false; // deals with debouncing issue if editor saves twice
     gulp.watch(['./src/data/generate.js'], function Data_Generator (done) {
         bs.notify("Regenerating Data", 1000);
         json(() =>{
@@ -323,15 +294,8 @@ const watch = (callback) => {
         console.log(colors.yellow('File ' + path + ' ' + event));
     });
 
-    gitWatch()
-		.on('check', function() {
-			console.log('CHECK!');
-		})
-		.on('change', function(newHash, oldHash) {
-			console.log('CHANGES! FROM', oldHash, '->', newHash);
-		});
-
-    callback();
+    done();
 };
 
+gulp.task('build', gulp.series(gulp.parallel(html, scss, js, jsv, img, font)))
 gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), gulp.parallel(serve, watch)));
