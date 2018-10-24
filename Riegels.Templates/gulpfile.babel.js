@@ -130,22 +130,22 @@ const js = (callback) => {
             if (callback)
                 callback();
         })
+        .on('error', function (err) {
+            console.log('[JS] ' + colors.red(err.toString()));
+            callback();
+        })
+        .on('end', function () {
+            callback();
+        })
         .pipe(source('app.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({
             loadMaps: true
         }))
         .pipe(uglify())
-        .on('error', function (err) {
-            console.log('[JS] ' + colors.red(err.toString()));
-            callback();
-        })
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(templateDistributionLocation + '/js'))
         .pipe(gulp.dest(webDistributionLocation + '/js'))
-        .on('end', function () {
-            callback();
-        });
 };
 
 const jsv = (callback) => {
@@ -168,16 +168,19 @@ const jsv = (callback) => {
             if (callback)
                 callback();
         })
-        .pipe(source('vendors.min.js'))
+        .on('error', function (err) {
+            console.log('[JS V] ' + colors.red(err.toString()));
+            callback();
+        })
+        .on('end', function () {
+            callback();
+        })
+        .pipe(source('vendor.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({
             loadMaps: true
         }))
         .pipe(uglify())
-        .on('error', function (err) {
-            console.log('[JS V] ' + colors.red(err.toString()));
-            callback();
-        })
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(templateDistributionLocation + '/js'))
         .pipe(gulp.dest(webDistributionLocation + '/js'));
@@ -191,6 +194,7 @@ const scss = (callback) => {
     return bundle([
         './src/styles/global.scss'
     ], 'bundle.min.css');
+    callback();
 
     function bundle(source, dest) {
         return gulp.src(source)
@@ -249,65 +253,48 @@ const build_routes = (cb) => {
     if(cb) cb();
 };
 
+
+let WatchQueue = require('./lib/watch-queue');
+let queue = new WatchQueue();
 const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
-
-    // TODO create filter on callbacks from watch tasks, queueing tasks globally to prevent over-firing
-    let debounceDelay = 1000;
-    let items = [];
-    let queuePaused = false;
     
-    const queue = (name, cb, exit) => {
-        console.log(name);
-        if(items.filter(i => i.name == name).length > 0)
-            exit();
-        else {
-            items.push({ name: name, cb: cb })
-        }
-        exit();
-    }
-    const flush = () => {
-        items.forEach((val, idx) => {
-            console.log(`Running ${val.name} Task`)
-            val.cb(val);
-        })
-        items = [];
-    }
+    let debounceDelay = 1000;
 
-    setInterval(() => {
-        console.log(`Processing ${items.length} Item(s)`);
-        flush();
-    }, debounceDelay);
 
-    gulp.watch(['./src/markup/**/*.pug'], { delay: 0 }, function Queue_Item(done){
-        queue('Pug', (response) => {
-            console.log(response.name);
-            bs.notify("Transpiling HTML", 1000);
+    gulp.watch(['./src/markup/**/*.pug'])
+    .on('all', function (event, path, stats) {
+        //console.log(colors.yellow('[QUEUE] File ' + path + ' ' + event));
+        queue.queue({ name: 'Pug', sleep: debounceDelay }, (task) => {
+            bs.notify("Transpiling" + task.name, 1000);
             html(() => {
-                bs.notify("Done Transpiling HTML", 1000);
-                done();
+                bs.notify("Done Transpiling" + task.name, 1000);
             });
-        }, done)
+        })
     });
 
-    // gulp.watch(['./src/markup/**/*.pug'], { delay: debounceDelay }, function Transpiling_Pug(done){
-    //     bs.notify("Recompiling HTML", 1000);
-    //     html(done);
-    // })
+    gulp.watch(['./src/styles/**/*.scss'])
+    .on('all', function (event, path, stats) {
+        //console.log(colors.yellow('[QUEUE] File ' + path + ' ' + event));
+        queue.queue({ name: 'Scss', sleep: debounceDelay }, (task) => {
+            bs.notify("Transpiling" + task.name, 1000);
+            scss(() => {
+                bs.notify("Done Transpiling" + task.name, 1000);
+            });
+        })
+    });
 
-    gulp.watch(['./src/styles/**/*.scss'], { delay: debounceDelay }, function Transpiling_Sass(done){
-        bs.notify("Recompiling SASS", 1000);
-        scss(done);
-    })
-
-    gulp.watch(['./src/js/**/*.js'], { delay: debounceDelay }, function JavaScript_Bundler(done){
-        bs.notify("Recompiling JavaScript", 1000);
-        js(()=>{
-            reload();
-            done();
-        });
-    })
+    gulp.watch(['./src/js/**/*.js'])
+    .on('all', function (event, path, stats) {
+        queue.queue({ name: 'Js', sleep: debounceDelay }, (task) => {
+            bs.notify("Transpiling" + task.name, 1000);
+            js(() => {
+                bs.notify("Done Transpiling" + task.name, 1000);
+                reload()
+            });
+        })
+    });
 
     gulp.watch(['./src/data/generate.js'], { delay: debounceDelay }, function Data_Generator (done) {
         bs.notify("Regenerating Data", 1000);
@@ -327,20 +314,18 @@ const watch = (done) => {
         });
     });
 
-    gulp.watch('../.git/HEAD', { name: 'Branch Watcher', delay: 0 }, function(){
+    gulp.watch('../.git/HEAD', { name: 'Branch Watcher', delay: 0 }, function(done){
         console.log('*************HEAD CHANGED**************')
         console.log('queue_delay')
-        queuePaused = true
+        queue.paused = true
         setTimeout(() => {
             console.log('release queue');
-            queuePaused = false;
-        }, 10000)
+            queue.paused = false
+        }, 8000)
         done();
     })
 
-    gulp.watch('./src/**/*', { delay: debounceDelay }, function File_Activity(done) {
-        done();
-    })
+    gulp.watch('./src/**/*', { delay: 0 })
     .on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
     });
