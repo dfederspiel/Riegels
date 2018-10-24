@@ -265,7 +265,6 @@ const watch = (done) => {
 
     gulp.watch(['./src/markup/**/*.pug'])
     .on('all', function (event, path, stats) {
-        //console.log(colors.yellow('[QUEUE] File ' + path + ' ' + event));
         queue.queue({ name: 'Pug', sleep: debounceDelay }, (task) => {
             bs.notify("Transpiling" + task.name, 1000);
             html(() => {
@@ -276,7 +275,6 @@ const watch = (done) => {
 
     gulp.watch(['./src/styles/**/*.scss'])
     .on('all', function (event, path, stats) {
-        //console.log(colors.yellow('[QUEUE] File ' + path + ' ' + event));
         queue.queue({ name: 'Scss', sleep: debounceDelay }, (task) => {
             bs.notify("Transpiling" + task.name, 1000);
             scss(() => {

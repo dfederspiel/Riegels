@@ -41,9 +41,11 @@ module.exports = class WatchQueue {
         this.tasks.forEach((task, idx) => {
             if (task.ready && !this.paused) {
                 if(task.sleep - (moment.now() - task.lastRun) < 0){
-                    task.ready = false;
-                    task.lastRun = moment.now()
-                    task.cb(task);
+                    setTimeout(() => {
+                        task.ready = false;
+                        task.lastRun = moment.now()
+                        task.cb(task);
+                    }, 1000);
                 }
             }
         })
