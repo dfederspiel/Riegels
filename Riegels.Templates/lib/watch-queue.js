@@ -5,6 +5,7 @@ module.exports = class WatchQueue {
 
         this.tasks = [];
         this.paused = false;
+        this.timeout = 0;
         this.debounceDelay = debounceDelay;
 
         this._flush = this._flush.bind(this);
@@ -41,13 +42,21 @@ module.exports = class WatchQueue {
         this.tasks.forEach((task, idx) => {
             if (task.ready && !this.paused) {
                 if(task.sleep - (moment.now() - task.lastRun) < 0){
-                    setTimeout(() => {
-                        task.ready = false;
-                        task.lastRun = moment.now()
-                        task.cb(task);
-                    }, 1000);
+                    this._run(task);
                 }
             }
         })
+    }
+    
+    _run = (task) => {
+        if(this.timeout)
+            clearInterval(this.timeout)
+        this.timeout = setTimeout(() => {
+            if(!this.paused){
+                task.ready = false;
+                task.lastRun = moment.now()
+                task.cb(task)
+            }
+        }, 1000);
     }
 }
