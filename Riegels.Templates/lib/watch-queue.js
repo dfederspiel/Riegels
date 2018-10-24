@@ -10,15 +10,26 @@ module.exports = class WatchQueue {
 
         this._flush = this._flush.bind(this);
 
-        setInterval(() => {
-            this._flush()
-        }, this.debounceDelay);
+
+        
+
+        // setInterval(() => {
+        //     if(!this.timeout)
+        //         this.timeout = setTimeout(() => {
+        //             this._flush()
+        //         })
+        // }, this.debounceDelay);
     }
 
     pause = () => this.paused = true
     continue = () => this.paused = false;
 
     queue = (data, cb) => {
+        
+        clearTimeout(this.timeout)
+        this.timeout = setTimeout(() => {
+            this._flush()
+        }, 1000)
         if (this.tasks.filter(i => i.name == data.name).length > 0) {
             let task = this.tasks.filter(i => i.name == data.name)[0]
             if (!task.ready && ((moment.now() - task.lastRun) > task.sleep)) {
@@ -49,14 +60,10 @@ module.exports = class WatchQueue {
     }
     
     _run = (task) => {
-        if(this.timeout)
-            clearInterval(this.timeout)
-        this.timeout = setTimeout(() => {
-            if(!this.paused){
-                task.ready = false;
-                task.lastRun = moment.now()
-                task.cb(task)
-            }
-        }, 1000);
+        if(!this.paused){
+            task.ready = false;
+            task.lastRun = moment.now()
+            task.cb(task)
+        }
     }
 }
