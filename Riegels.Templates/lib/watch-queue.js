@@ -36,7 +36,7 @@ module.exports = class WatchQueue {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
             this._flush()
-        }, 1000)
+        }, 2500)
         if (this.tasks.filter(i => i.name == data.name).length > 0) {
             let task = this.tasks.filter(i => i.name == data.name)[0]
             if (!task.ready && ((moment.now() - task.lastRun) > task.sleep)) {
