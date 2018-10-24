@@ -312,16 +312,14 @@ const watch = (done) => {
         });
     });
 
-    gulp.watch('../.git/HEAD', { name: 'Branch Watcher', delay: 0 }, function Branch_Change(done){
+    gulp.watch('../.git/HEAD')
+    .on('all', function (event, path, stats) {
         console.log('*************HEAD CHANGED**************')
         console.log('queue_delay')
-        queue.paused = true
-        setTimeout(() => {
-            console.log('release queue');
-            queue.paused = false
-        }, 8000)
-        done();
-    })
+
+        // move to queue.pause(timeousMs)
+        queue.pause(5000)
+    });
 
     gulp.watch('./src/**/*', { delay: 0 })
     .on('all', function (event, path, stats) {

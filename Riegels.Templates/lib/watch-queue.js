@@ -21,7 +21,14 @@ module.exports = class WatchQueue {
         // }, this.debounceDelay);
     }
 
-    pause = () => this.paused = true
+    pause = (ms) => {
+        this.paused = true
+        this.timeout = setTimeout(() => {
+            console.log('release queue');
+            this.paused = false
+            this._flush()
+        }, ms)
+    }
     continue = () => this.paused = false;
 
     queue = (data, cb) => {
