@@ -1,11 +1,12 @@
 var moment = require('moment');
 
 module.exports = class WatchQueue {
-    constructor(debounceDelay = 1000) {
+    constructor(debounceDelay = 2000) {
 
         this.tasks = [];
         this.paused = false;
         this.timeout = 0;
+        this.sleep = debounceDelay;
         this.debounceDelay = debounceDelay;
 
         this._flush = this._flush.bind(this);
@@ -22,6 +23,7 @@ module.exports = class WatchQueue {
     }
 
     pause = (ms) => {
+        this.sleep = ms;
         this.paused = true
         this.timeout = setTimeout(() => {
             console.log('release queue');
@@ -33,7 +35,7 @@ module.exports = class WatchQueue {
 
     queue = (data, cb) => {
         clearTimeout(this.timeout)
-        this.pause(1000)
+        this.pause(this.sleep)
         if (this.tasks.filter(i => i.name == data.name).length > 0) {
             let task = this.tasks.filter(i => i.name == data.name)[0]
             if (!task.ready && ((moment.now() - task.lastRun) > task.sleep)) {
