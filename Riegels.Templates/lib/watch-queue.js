@@ -8,6 +8,7 @@ module.exports = class WatchQueue {
         this.timeout = 0;
         this.sleep = debounceDelay;
         this.debounceDelay = debounceDelay;
+        this.pendingRequests = 0;
 
         this._flush = this._flush.bind(this);
     }
@@ -16,9 +17,9 @@ module.exports = class WatchQueue {
         this.sleep = ms;
         this.paused = true
         this.timeout = setTimeout(() => {
-            console.log('release queue');
             this.paused = false
             this._flush()
+            this.pendingRequests = 0;
             this.timeout = null;
         }, ms)
     }
@@ -28,14 +29,17 @@ module.exports = class WatchQueue {
         if(this.timeout){
             clearTimeout(this.timeout)
         }
-        this.pause(2000)
+        this.pendingRequests += 1;
+        if(this.pendingRequests > 10)
+            this.pause(8000)
+        else
+            this.pause(500);
         if (this.tasks.filter(i => i.name == data.name).length > 0) {
             let task = this.tasks.filter(i => i.name == data.name)[0]
             task.ready = true;
         } else {
             this.tasks.push({
                 name: data.name,
-                sleep: data.sleep,
                 cb: cb,
                 ready: true,
                 lastRun: 0
@@ -46,9 +50,7 @@ module.exports = class WatchQueue {
     _flush = () => {
         this.tasks.forEach((task, idx) => {
             if (task.ready && !this.paused) {
-                if(task.sleep - (moment.now() - task.lastRun) < 0){
-                    this._run(task);
-                }
+                this._run(task);
             }
         })
     }

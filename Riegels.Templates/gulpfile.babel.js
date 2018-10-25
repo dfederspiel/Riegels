@@ -255,21 +255,16 @@ const build_routes = (cb) => {
     if (cb) cb();
 };
 
-
 let WatchQueue = require('./lib/watch-queue');
 let queue = new WatchQueue();
 const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
 
-    let debounceDelay = 1000;
-
-
     gulp.watch(['./src/markup/**/*.pug'])
         .on('all', function (event, path, stats) {
             queue.queue({
-                name: 'Pug',
-                sleep: debounceDelay
+                name: 'Pug'
             }, (task) => {
                 bs.notify("Transpiling" + task.name, 1000);
                 html(() => {
@@ -281,8 +276,7 @@ const watch = (done) => {
     gulp.watch(['./src/styles/**/*.scss'])
         .on('all', function (event, path, stats) {
             queue.queue({
-                name: 'Scss',
-                sleep: debounceDelay
+                name: 'Scss'
             }, (task) => {
                 bs.notify("Transpiling" + task.name, 1000);
                 scss(() => {
@@ -294,8 +288,7 @@ const watch = (done) => {
     gulp.watch(['./src/js/**/*.js'])
         .on('all', function (event, path, stats) {
             queue.queue({
-                name: 'Js',
-                sleep: debounceDelay
+                name: 'Js'
             }, (task) => {
                 bs.notify("Transpiling" + task.name, 1000);
                 js(() => {
@@ -305,13 +298,10 @@ const watch = (done) => {
             })
         });
 
-    gulp.watch(['./src/data/generate.js'], {
-            delay: debounceDelay
-        })
+    gulp.watch(['./src/data/generate.js'])
         .on('all', function (event, path, stats) {
             queue.queue({
-                name: 'Generate',
-                sleep: debounceDelay
+                name: 'Generate'
             }, (task) => {
                 bs.notify("Regenerating Data", 1000);
                 json(() => {
@@ -323,15 +313,12 @@ const watch = (done) => {
             })
         });
 
-    gulp.watch(['./src/img/**/*'], {
-            delay: 5000
-        })
+    gulp.watch(['./src/img/**/*'])
         .on('all', function (event, path, stats) {
             queue.queue({
-                name: 'Generate',
-                sleep: debounceDelay
+                name: 'Generate'
             }, (task) => {
-                bs.notify("Transferring Images", debounceDelay);
+                bs.notify("Transferring Images", 1000);
                 img(() => {
                     reload();
                     done();
@@ -339,9 +326,7 @@ const watch = (done) => {
             })
         });
 
-    gulp.watch('./src/**/*', {
-            delay: 0
-        })
+    gulp.watch('./src/**/*')
         .on('all', function (event, path, stats) {
             console.log(colors.yellow('File ' + path + ' ' + event));
         });
