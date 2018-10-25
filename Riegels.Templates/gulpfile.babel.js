@@ -54,7 +54,7 @@ const json = (callback) => {
                 console.log('[JSON] ' + colors.red(err));
                 if (callback)
                     callback()
-            } else{
+            } else {
                 console.log(colors.green('[JSON] DB.json Saved'.bold));
                 if (callback)
                     callback();
@@ -88,7 +88,9 @@ const html = (callback) => {
         )
         .pipe(gulp.dest(templateDistributionLocation + '/'))
         .pipe(gulp.dest(webDistributionLocation + '/'))
-        .pipe(bs.stream({once: true}));
+        .pipe(bs.stream({
+            once: true
+        }));
 };
 
 const img = (callback) => {
@@ -250,7 +252,7 @@ const build_routes = (cb) => {
     server.use(jsonServer.defaults());
     server.use(jsonServer.router(jsonData()));
     router.use('/api', server)
-    if(cb) cb();
+    if (cb) cb();
 };
 
 
@@ -259,63 +261,90 @@ let queue = new WatchQueue();
 const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
-    
+
     let debounceDelay = 1000;
 
 
     gulp.watch(['./src/markup/**/*.pug'])
-    .on('all', function (event, path, stats) {
-        queue.queue({ name: 'Pug', sleep: debounceDelay }, (task) => {
-            bs.notify("Transpiling" + task.name, 1000);
-            html(() => {
-                bs.notify("Done Transpiling" + task.name, 1000);
-            });
-        })
-    });
-
-    gulp.watch(['./src/styles/**/*.scss'])
-    .on('all', function (event, path, stats) {
-        queue.queue({ name: 'Scss', sleep: debounceDelay }, (task) => {
-            bs.notify("Transpiling" + task.name, 1000);
-            scss(() => {
-                bs.notify("Done Transpiling" + task.name, 1000);
-            });
-        })
-    });
-
-    gulp.watch(['./src/js/**/*.js'])
-    .on('all', function (event, path, stats) {
-        queue.queue({ name: 'Js', sleep: debounceDelay }, (task) => {
-            bs.notify("Transpiling" + task.name, 1000);
-            js(() => {
-                bs.notify("Done Transpiling" + task.name, 1000);
-                reload()
-            });
-        })
-    });
-
-    gulp.watch(['./src/data/generate.js'], { delay: debounceDelay }, function Data_Generator (done) {
-        bs.notify("Regenerating Data", 1000);
-        json(() =>{
-            build_routes(() => {
-                reload();
-                done();
+        .on('all', function (event, path, stats) {
+            queue.queue({
+                name: 'Pug',
+                sleep: debounceDelay
+            }, (task) => {
+                bs.notify("Transpiling" + task.name, 1000);
+                html(() => {
+                    bs.notify("Done Transpiling" + task.name, 1000);
+                });
             })
         });
-    })
 
-    gulp.watch(['./src/img/**/*'], { delay: 5000 }, function Transfer_Images(done){
-        bs.notify("Transferring Images", debounceDelay);
-        img(()=>{
-            reload();
-            done();
+    gulp.watch(['./src/styles/**/*.scss'])
+        .on('all', function (event, path, stats) {
+            queue.queue({
+                name: 'Scss',
+                sleep: debounceDelay
+            }, (task) => {
+                bs.notify("Transpiling" + task.name, 1000);
+                scss(() => {
+                    bs.notify("Done Transpiling" + task.name, 1000);
+                });
+            })
         });
-    });
 
-    gulp.watch('./src/**/*', { delay: 0 })
-    .on('all', function (event, path, stats) {
-        console.log(colors.yellow('File ' + path + ' ' + event));
-    });
+    gulp.watch(['./src/js/**/*.js'])
+        .on('all', function (event, path, stats) {
+            queue.queue({
+                name: 'Js',
+                sleep: debounceDelay
+            }, (task) => {
+                bs.notify("Transpiling" + task.name, 1000);
+                js(() => {
+                    bs.notify("Done Transpiling" + task.name, 1000);
+                    reload()
+                });
+            })
+        });
+
+    gulp.watch(['./src/data/generate.js'], {
+            delay: debounceDelay
+        })
+        .on('all', function (event, path, stats) {
+            queue.queue({
+                name: 'Generate',
+                sleep: debounceDelay
+            }, (task) => {
+                bs.notify("Regenerating Data", 1000);
+                json(() => {
+                    build_routes(() => {
+                        reload();
+                        done();
+                    })
+                });
+            })
+        });
+
+    gulp.watch(['./src/img/**/*'], {
+            delay: 5000
+        })
+        .on('all', function (event, path, stats) {
+            queue.queue({
+                name: 'Generate',
+                sleep: debounceDelay
+            }, (task) => {
+                bs.notify("Transferring Images", debounceDelay);
+                img(() => {
+                    reload();
+                    done();
+                });
+            })
+        });
+
+    gulp.watch('./src/**/*', {
+            delay: 0
+        })
+        .on('all', function (event, path, stats) {
+            console.log(colors.yellow('File ' + path + ' ' + event));
+        });
 
     done();
 };
