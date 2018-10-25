@@ -30,8 +30,8 @@ module.exports = class WatchQueue {
             clearTimeout(this.timeout)
         }
         this.pendingRequests += 1;
-        if(this.pendingRequests > 10)
-            this.pause(8000)
+        if(this.pendingRequests > 2)
+            this.pause(5000)
         else
             this.pause(500);
         if (this.tasks.filter(i => i.name == data.name).length > 0) {
