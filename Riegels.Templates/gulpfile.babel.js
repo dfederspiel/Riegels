@@ -312,15 +312,6 @@ const watch = (done) => {
         });
     });
 
-    gulp.watch('../.git/HEAD')
-    .on('all', function (event, path, stats) {
-        console.log('*************HEAD CHANGED**************')
-        console.log('queue_delay')
-
-        // move to queue.pause(timeousMs)
-        queue.pause(5000)
-    });
-
     gulp.watch('./src/**/*', { delay: 0 })
     .on('all', function (event, path, stats) {
         console.log(colors.yellow('File ' + path + ' ' + event));
