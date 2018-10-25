@@ -11,6 +11,16 @@ module.exports = class WatchQueue {
         this.pendingRequests = 0;
 
         this._flush = this._flush.bind(this);
+
+        this.run = (task) => { 
+            return new Promise(function(resolve, reject){
+                task.ready = false;
+                task.lastRun = moment.now()
+                task.cb(() => {
+                    resolve(task)
+                })
+            })
+        }
     }
 
     pause = (ms) => {
@@ -56,10 +66,8 @@ module.exports = class WatchQueue {
     }
     
     _run = (task) => {
-        if(!this.paused){
-            task.ready = false;
-            task.lastRun = moment.now()
-            task.cb(task)
-        }
+        this.run(task).then(() => {
+            console.log('complete');
+        });
     }
 }

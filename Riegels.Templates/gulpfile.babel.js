@@ -297,7 +297,7 @@ const watch = (done) => {
                 });
             })
         });
-
+        
     gulp.watch(['./src/data/generate.js'])
         .on('all', function (event, path, stats) {
             queue.queue({
