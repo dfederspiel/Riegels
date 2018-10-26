@@ -1,13 +1,13 @@
 ﻿// Use import or require to reference dependencies
 import Calendar from './events'; // local library script
 import $ from 'jquery'; // node package (preferred for vendor scripts)
+import ScrollReveal from 'scrollreveal';
 
 
 // Expose object to the browser
 // -- Avoid if possible, but useful if you have a rogue script that 
 // -- must cross the moat that is this entire bundle (nothing in here is scoped to the window by default - how cool, how safe! :)
 window.Calendar = Calendar;
-window.ease = ease;
 // TODO: figure out how to include dev and production versions so that dev dependencies can be run in the console.
 
 // Scroll to sections
