@@ -265,10 +265,11 @@ const watch = (done) => {
         .on('all', function (event, path, stats) {
             queue.queue({
                 name: 'Pug'
-            }, (task) => {
+            }, (task, cb) => {
                 bs.notify("Transpiling" + task.name, 1000);
                 html(() => {
                     bs.notify("Done Transpiling" + task.name, 1000);
+                    cb();
                 });
             })
         });

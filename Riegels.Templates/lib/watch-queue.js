@@ -17,6 +17,9 @@ module.exports = class WatchQueue {
                 task.ready = false;
                 task.lastRun = moment.now()
                 task.cb(() => {
+                    console.log('here');
+                    
+                }, (msg) => {
                     resolve(task)
                 })
             })
