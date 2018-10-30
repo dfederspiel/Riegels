@@ -294,7 +294,7 @@ Riegels/**/*.html
 Riegels/js/app.min.js
 Riegels/js/app.min.js.map
 Riegels.Templates/src/data/db.json
-Riegels/js/vendors.min.js
-Riegels/js/vendors.min.js.map
+Riegels/js/vendor.min.js
+Riegels/js/vendor.min.js.map
 Riegels/js/client.min.js
 Riegels/js/client.min.js.map
