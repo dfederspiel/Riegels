@@ -13,6 +13,7 @@ const gulp = require('gulp'),
     bs = require('browser-sync').create(),
     reload = bs.reload,
     exec = require("child_process").exec,
+    multiDest = require("gulp-multi-dest")
     cleanCSS = require('gulp-clean-css');
 
 const log = (o, level = 0) => {
@@ -35,8 +36,15 @@ let router = express.Router();
 let jsonServer = require('json-server');
 let server = null;
 
-const templateDistributionLocation = "./dist";
-const webDistributionLocation = "../Riegels";
+const config = {
+    distribution: {
+        js: ["./dist/js", "../Riegels/js"],
+        html: ["./dist", "../Riegels"],
+        css: ["./dist/css", "../Riegels/css"],
+        images: ["./dist/img", "../Riegels/img"],
+        fonts: ["./dist/fonts", "../Riegels/fonts"],
+    }
+}
 
 var jsonData = require('./src/data/generate.js');
 
@@ -86,8 +94,7 @@ const html = (callback) => {
                 callback();
             })
         )
-        .pipe(gulp.dest(templateDistributionLocation + '/'))
-        .pipe(gulp.dest(webDistributionLocation + '/'))
+        .pipe(multiDest(config.distribution.html))
         .pipe(bs.stream({
             once: true
         }));
@@ -96,8 +103,7 @@ const html = (callback) => {
 const img = (callback) => {
     console.log(colors.cyan('[IMAGE] Copying Images'));
     return gulp.src('./src/img/**/*.*')
-        .pipe(gulp.dest(templateDistributionLocation + '/img'))
-        .pipe(gulp.dest(webDistributionLocation + '/img'))
+        .pipe(multiDest(config.distribution.images))
         .on('error', function (err) {
             console.log('[IMAGE] ' + colors.red(err.toString()));
             callback();
@@ -109,8 +115,7 @@ const img = (callback) => {
 const font = () => {
     console.log('[FONT] ' + colors.cyan('Copying Fonts'));
     return gulp.src('./src/fonts/**/*.*')
-        .pipe(gulp.dest(templateDistributionLocation + '/fonts'))
-        .pipe(gulp.dest(webDistributionLocation + '/fonts'));
+        .pipe(multiDest(config.distribution.fonts))
 };
 
 const js = (callback) => {
@@ -146,8 +151,7 @@ const js = (callback) => {
         }))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(templateDistributionLocation + '/js'))
-        .pipe(gulp.dest(webDistributionLocation + '/js'))
+        .pipe(multiDest(config.distribution.js))
 };
 
 const jsv = (callback) => {
@@ -184,8 +188,7 @@ const jsv = (callback) => {
         }))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(templateDistributionLocation + '/js'))
-        .pipe(gulp.dest(webDistributionLocation + '/js'));
+        .pipe(multiDest(config.distribution.js))
 };
 
 const scss = (callback) => {
@@ -213,8 +216,7 @@ const scss = (callback) => {
                 console.log(colors.red('[SCSS] ' + err.toString()));
                 callback();
             })
-            .pipe(gulp.dest(templateDistributionLocation + '/css'))
-            .pipe(gulp.dest(webDistributionLocation + '/css'))
+            .pipe(multiDest(config.distribution.css))
             .pipe(bs.stream());
 
     }
