@@ -21,11 +21,13 @@ mixin events
                                 <div class="description">{{{ description}}}</div>
                             </div>
                             <div class="group">
-                                <h3>Where</h3>
-                                <a class="location" href="https://www.google.com/maps/search/?api=1&query={{location}}">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <strong>{{{address location}}}</strong>
-                                </a>
+                                {{#if location}}
+                                    <h3>Where</h3>
+                                    <a class="location" href="https://www.google.com/maps/search/?api=1&query={{location}}">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <strong>{{{address location}}}</strong>
+                                    </a>
+                                {{/if}}
                             </div>
                         </div>
                     </div>

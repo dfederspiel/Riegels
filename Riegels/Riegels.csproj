@@ -205,9 +205,7 @@
     <Content Include="img\scene-misc.jpg" />
     <Content Include="index.html" />
     <Content Include="js\app.min.js" />
-    <Content Include="js\client.min.js" />
     <Content Include="js\vendor.min.js" />
-    <Content Include="js\vendors.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -217,7 +215,6 @@
     <Content Include="credentials.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="js\client.min.js.map" />
     <Content Include="js\vendor.min.js.map" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
@@ -225,7 +222,6 @@
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="js\app.min.js.map" />
-    <Content Include="js\vendors.min.js.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
