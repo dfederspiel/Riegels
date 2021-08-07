@@ -1,4 +1,7 @@
 # Riegels
+![build status](https://github.com/dfederspiel/rapid-dev-demo-riegels/actions/workflows/main.yml/badge.svg)  
+
+
 Brochure site for a local cigar shop, implemented using the [rapid-dev](https://github.com/dfederspiel/rapid-dev) templating system.
 
 ```
